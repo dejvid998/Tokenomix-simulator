@@ -9,12 +9,33 @@ const Index = () => {
   const [tokenomicsData, setTokenomicsData] = React.useState({
     totalSupply: 1000000000,
     allocations: [
-      { category: "Team", percentage: 20 },
-      { category: "Advisors", percentage: 5 },
-      { category: "Public Sale", percentage: 30 },
-      { category: "Ecosystem", percentage: 25 },
-      { category: "Treasury", percentage: 20 }
-    ]
+      { 
+        category: "Team", 
+        percentage: 20,
+        vesting: { cliff: 12, duration: 36, type: "linear" as const }
+      },
+      { 
+        category: "Advisors", 
+        percentage: 5,
+        vesting: { cliff: 6, duration: 24, type: "linear" as const }
+      },
+      { 
+        category: "Public Sale", 
+        percentage: 30,
+        vesting: { cliff: 0, duration: 0, type: "cliff" as const }
+      },
+      { 
+        category: "Ecosystem", 
+        percentage: 25,
+        vesting: { cliff: 3, duration: 48, type: "linear" as const }
+      },
+      { 
+        category: "Treasury", 
+        percentage: 20,
+        vesting: { cliff: 6, duration: 36, type: "linear" as const }
+      }
+    ],
+    marketCondition: "neutral" as const
   });
 
   return (
