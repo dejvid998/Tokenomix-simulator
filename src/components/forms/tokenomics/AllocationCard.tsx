@@ -72,35 +72,35 @@ export const AllocationCard = ({
           </p>
         </div>
         <div>
-          <Label>Duration (months)</Label>
-          <Input
-            type="number"
-            value={allocation.vesting.duration}
-            onChange={(e) => onVestingChange(index, "duration", Number(e.target.value))}
-            min={0}
-          />
-          <p className="text-xs text-muted-foreground mt-1">
-            Period over which tokens gradually unlock
-          </p>
+          <Label>Vesting Type</Label>
+          <Select
+            value={allocation.vesting.type}
+            onValueChange={(value: VestingType) => onVestingChange(index, "type", value)}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="linear">Linear</SelectItem>
+              <SelectItem value="cliff">Cliff</SelectItem>
+              <SelectItem value="exponential">Exponential</SelectItem>
+              <SelectItem value="custom">Custom</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       <div>
-        <Label>Vesting Type</Label>
-        <Select
-          value={allocation.vesting.type}
-          onValueChange={(value: VestingType) => onVestingChange(index, "type", value)}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="linear">Linear</SelectItem>
-            <SelectItem value="cliff">Cliff</SelectItem>
-            <SelectItem value="exponential">Exponential</SelectItem>
-            <SelectItem value="custom">Custom</SelectItem>
-          </SelectContent>
-        </Select>
+        <Label>Duration (months)</Label>
+        <Input
+          type="number"
+          value={allocation.vesting.duration}
+          onChange={(e) => onVestingChange(index, "duration", Number(e.target.value))}
+          min={0}
+        />
+        <p className="text-xs text-muted-foreground mt-1">
+          Period over which tokens gradually unlock
+        </p>
       </div>
     </Card>
   );
