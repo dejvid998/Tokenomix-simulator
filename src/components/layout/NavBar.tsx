@@ -19,6 +19,9 @@ export const NavBar = () => {
                 <Home size={18} />
                 <span>Home</span>
               </Link>
+              <span className="text-sm font-medium text-purple-600 dark:text-purple-400">
+                Resomnium
+              </span>
               <Link 
                 to="/analytics" 
                 className="flex items-center gap-2 text-sm text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white transition-colors"
