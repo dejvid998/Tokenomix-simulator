@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -68,6 +67,9 @@ export const AllocationCard = ({
             onChange={(e) => onVestingChange(index, "cliff", Number(e.target.value))}
             min={0}
           />
+          <p className="text-xs text-muted-foreground mt-1">
+            Period before tokens begin unlocking
+          </p>
         </div>
         <div>
           <Label>Duration (months)</Label>
@@ -77,6 +79,9 @@ export const AllocationCard = ({
             onChange={(e) => onVestingChange(index, "duration", Number(e.target.value))}
             min={0}
           />
+          <p className="text-xs text-muted-foreground mt-1">
+            Period over which tokens gradually unlock
+          </p>
         </div>
       </div>
 
