@@ -36,60 +36,82 @@ export const TokenomicsQuestionnaire = () => {
     setAnswers(prev => ({ ...prev, [question]: value }));
   };
 
+  const questions = [
+    {
+      id: 'launchingToken',
+      question: 'Are you launching a token for your project?',
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'projectGoal',
+      question: 'What is your project\'s primary goal?',
+      options: ['DeFi', 'DAO', 'GameFi', 'NFT', 'Infrastructure']
+    },
+    {
+      id: 'fundraisingMethod',
+      question: 'Which fundraising method are you considering?',
+      options: ['IDO', 'Private Sale', 'Launchpad', 'Fair Launch']
+    },
+    {
+      id: 'vcConnections',
+      question: 'Do you have connections with VCs or launchpads?',
+      options: ['Yes', 'No', 'Need Help']
+    },
+    {
+      id: 'capitalNeeded',
+      question: 'How much capital do you need to raise?',
+      options: ['<$100K', '$100K-$500K', '$500K-$1M+']
+    },
+    {
+      id: 'launchpadListing',
+      question: 'Are you looking for a launchpad listing?',
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'dexLiquidity',
+      question: 'Do you plan to provide liquidity on a DEX?',
+      options: ['Yes', 'No', 'Not Sure']
+    },
+    {
+      id: 'stakingRewards',
+      question: 'Do you want staking and rewards for your token?',
+      options: ['Yes', 'No']
+    },
+    {
+      id: 'legalSupport',
+      question: 'Do you need legal & compliance support?',
+      options: ['Yes', 'No', 'Need Guidance']
+    },
+    {
+      id: 'aiOptimization',
+      question: 'Would you like to integrate UnlockFi\'s AI-based tokenomics optimization?',
+      options: ['Yes', 'No']
+    }
+  ];
+
   return (
     <Card className="p-6 space-y-6">
-      <div className="space-y-4">
-        <div>
-          <Label className="text-base">Are you launching a token for your project?</Label>
-          <RadioGroup
-            value={answers.launchingToken}
-            onValueChange={(value) => handleAnswerChange('launchingToken', value)}
-            className="mt-2"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="yes" id="launchingToken-yes" />
-              <Label htmlFor="launchingToken-yes">Yes</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="no" id="launchingToken-no" />
-              <Label htmlFor="launchingToken-no">No</Label>
-            </div>
-          </RadioGroup>
-        </div>
-
-        <div>
-          <Label className="text-base">What is your project's primary goal?</Label>
-          <RadioGroup
-            value={answers.projectGoal}
-            onValueChange={(value) => handleAnswerChange('projectGoal', value)}
-            className="mt-2"
-          >
-            {['DeFi', 'DAO', 'GameFi', 'NFT', 'Infrastructure'].map((goal) => (
-              <div key={goal} className="flex items-center space-x-2">
-                <RadioGroupItem value={goal.toLowerCase()} id={`goal-${goal}`} />
-                <Label htmlFor={`goal-${goal}`}>{goal}</Label>
-              </div>
-            ))}
-          </RadioGroup>
-        </div>
-
-        <div>
-          <Label className="text-base">Which fundraising method are you considering?</Label>
-          <RadioGroup
-            value={answers.fundraisingMethod}
-            onValueChange={(value) => handleAnswerChange('fundraisingMethod', value)}
-            className="mt-2"
-          >
-            {['IDO', 'Private Sale', 'Launchpad', 'Fair Launch'].map((method) => (
-              <div key={method} className="flex items-center space-x-2">
-                <RadioGroupItem value={method.toLowerCase()} id={`method-${method}`} />
-                <Label htmlFor={`method-${method}`}>{method}</Label>
-              </div>
-            ))}
-          </RadioGroup>
-        </div>
-
-        {/* ... More questions following the same pattern */}
+      <div className="space-y-6">
+        {questions.map((q) => (
+          <div key={q.id}>
+            <Label className="text-base">{q.question}</Label>
+            <RadioGroup
+              value={answers[q.id as keyof QuestionnaireData]}
+              onValueChange={(value) => handleAnswerChange(q.id as keyof QuestionnaireData, value)}
+              className="mt-2"
+            >
+              {q.options.map((option) => (
+                <div key={option} className="flex items-center space-x-2">
+                  <RadioGroupItem 
+                    value={option.toLowerCase()} 
+                    id={`${q.id}-${option}`}
+                  />
+                  <Label htmlFor={`${q.id}-${option}`}>{option}</Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+        ))}
       </div>
     </Card>
   );
