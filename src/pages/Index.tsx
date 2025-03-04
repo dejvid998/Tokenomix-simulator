@@ -1,7 +1,9 @@
+
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { TokenDistributionChart } from "@/components/charts/TokenDistributionChart";
 import { TokenomicsForm } from "@/components/forms/TokenomicsForm";
+import { TokenomicsQuestionnaire } from "@/components/forms/tokenomics/TokenomicsQuestionnaire";
 import { ProjectHeader } from "@/components/layout/ProjectHeader";
 import type { TokenomicsData, VestingType } from '@/types/tokenomics';
 
@@ -33,23 +35,32 @@ const Index = () => {
       <div className="container mx-auto px-4 py-8">
         <ProjectHeader />
         
-        <div className="grid lg:grid-cols-2 gap-8 mt-8">
+        <div className="space-y-8 mt-8">
           <Card className="p-6 backdrop-blur-sm bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-700">
-            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
+            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-4">
               Token Distribution
             </h3>
             <TokenDistributionChart data={tokenomicsData.allocations} />
           </Card>
 
-          <Card className="p-6 backdrop-blur-sm bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-700">
-            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-4">
-              Configure Tokenomics
-            </h3>
-            <TokenomicsForm 
-              data={tokenomicsData} 
-              onChange={setTokenomicsData} 
-            />
-          </Card>
+          <div className="grid lg:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-4">
+                Configure Tokenomics
+              </h3>
+              <TokenomicsForm 
+                data={tokenomicsData} 
+                onChange={setTokenomicsData} 
+              />
+            </div>
+
+            <div>
+              <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-4">
+                Tokenomics Questionnaire
+              </h3>
+              <TokenomicsQuestionnaire />
+            </div>
+          </div>
         </div>
       </div>
     </div>
