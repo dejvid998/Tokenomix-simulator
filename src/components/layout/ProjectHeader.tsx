@@ -1,5 +1,4 @@
 
-import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const ProjectHeader = () => {
@@ -18,11 +17,6 @@ export const ProjectHeader = () => {
         Simulate and visualize token distribution models with real-time updates. 
         Create sustainable tokenomics that align with your project goals.
       </p>
-
-      <Button variant="outline" size="sm" className="mt-4">
-        <span>Learn more</span>
-        <ChevronDown className="ml-2 h-4 w-4" />
-      </Button>
     </div>
   );
 };
