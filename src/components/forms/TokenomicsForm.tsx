@@ -47,6 +47,18 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
     });
   };
 
+  const handleCategoryChange = (index: number, value: string) => {
+    const newAllocations = [...data.allocations];
+    newAllocations[index] = {
+      ...newAllocations[index],
+      category: value
+    };
+    onChange({
+      ...data,
+      allocations: newAllocations
+    });
+  };
+
   const handleAllocationChange = (index: number, value: number) => {
     const newAllocations = [...data.allocations];
     newAllocations[index] = {
@@ -59,7 +71,7 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
     });
   };
 
-  const handleVestingChange = (index: number, field: keyof VestingSchedule, value: any) => {
+  const handleVestingChange = (index: number, field: keyof TokenAllocation['vesting'], value: any) => {
     const newAllocations = [...data.allocations];
     newAllocations[index] = {
       ...newAllocations[index],
@@ -186,14 +198,7 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
               <div className="flex-1">
                 <Input
                   value={allocation.category}
-                  onChange={(e) => {
-                    const newAllocations = [...data.allocations];
-                    newAllocations[index] = {
-                      ...allocation,
-                      category: e.target.value
-                    };
-                    onChange({ ...data, allocations: newAllocations });
-                  }}
+                  onChange={(e) => handleCategoryChange(index, e.target.value)}
                   className="mb-2"
                   placeholder="Team Name"
                 />
