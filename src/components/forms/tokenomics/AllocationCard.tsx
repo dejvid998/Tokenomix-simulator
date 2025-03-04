@@ -73,7 +73,7 @@ export const AllocationCard = ({
           </p>
         </div>
         <div>
-          <Label>Duration (months)</Label>
+          <Label>Vesting (months)</Label>
           <Input
             type="number"
             value={allocation.vesting.duration}
