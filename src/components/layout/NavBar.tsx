@@ -19,7 +19,7 @@ export const NavBar = () => {
                 <Home size={18} />
                 <span>Home</span>
               </Link>
-              <span className="text-sm font-medium text-purple-600 dark:text-purple-400">
+              <span className="text-sm font-medium text-emerald-500 dark:text-emerald-400">
                 Resomnium
               </span>
               <Link 
