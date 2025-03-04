@@ -71,8 +71,6 @@ export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
 
   const chartData = calculateUnlocks();
   const categories = data.map(d => d.category);
-
-  // Find months with cliff unlock events
   const cliffMonths = data.map(allocation => allocation.vesting.cliff)
     .filter(cliff => cliff > 0);
 
@@ -91,61 +89,84 @@ export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
       <ResponsiveContainer width="100%" height={400}>
         <LineChart
           data={chartData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          margin={{ top: 20, right: 30, left: 40, bottom: 20 }}
         >
           <CartesianGrid 
             strokeDasharray="3 3" 
-            opacity={0.5}
-            stroke="#9ca3af"
+            opacity={0.3}
+            stroke="#9F9EA1"
           />
           <XAxis 
             dataKey="month" 
             label={{ 
               value: 'Months After TGE', 
               position: 'insideBottom', 
-              offset: -5,
-              fill: '#6b7280'
+              offset: -10,
+              fill: '#555555',
+              fontSize: 12,
+              fontWeight: 500
             }}
-            tick={{ fill: '#6b7280' }}
+            tick={{ 
+              fill: '#555555',
+              fontSize: 11 
+            }}
+            stroke="#888888"
+            tickMargin={10}
           />
           <YAxis 
             label={{ 
               value: 'Tokens Unlocked', 
               angle: -90, 
               position: 'insideLeft', 
-              offset: 0,
-              fill: '#6b7280'
+              offset: -5,
+              fill: '#555555',
+              fontSize: 12,
+              fontWeight: 500
             }}
             tickFormatter={formatTokenAmount}
-            tick={{ fill: '#6b7280' }}
+            tick={{ 
+              fill: '#555555',
+              fontSize: 11
+            }}
+            stroke="#888888"
+            tickMargin={10}
           />
           <Tooltip 
             formatter={formatTooltipValue}
             contentStyle={{
-              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              backgroundColor: 'rgba(255, 255, 255, 0.98)',
               borderRadius: '8px',
               border: '1px solid #e5e7eb',
               boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+              padding: '8px 12px',
+            }}
+            labelStyle={{
+              fontWeight: 600,
+              marginBottom: '4px'
             }}
           />
           <Legend 
             verticalAlign="bottom" 
             height={36}
-            formatter={(value) => <span className="text-sm">{value}</span>}
+            formatter={(value) => (
+              <span style={{ color: '#555555', fontSize: '12px', fontWeight: 500 }}>
+                {value}
+              </span>
+            )}
           />
           
-          {/* Add reference lines for cliff periods */}
           {cliffMonths.map((month, index) => (
             <ReferenceLine
               key={`cliff-${month}-${index}`}
               x={month}
-              stroke="#9ca3af"
+              stroke="#9F9EA1"
               strokeDasharray="3 3"
               label={{
                 value: `Cliff End`,
                 position: 'top',
-                fill: '#6b7280',
-                fontSize: 12
+                fill: '#555555',
+                fontSize: 11,
+                fontWeight: 500
               }}
             />
           ))}
