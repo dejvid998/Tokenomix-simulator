@@ -12,19 +12,39 @@ const Index = () => {
     totalSupply: 1000000000,
     allocations: [
       { 
-        category: "Core Team", 
-        percentage: 20,
+        category: "Team", 
+        percentage: 15,
         vesting: { cliff: 12, duration: 36, type: "linear" as VestingType }
       },
       { 
+        category: "Advisors", 
+        percentage: 5,
+        vesting: { cliff: 6, duration: 24, type: "linear" as VestingType }
+      },
+      { 
+        category: "Private Sale", 
+        percentage: 10,
+        vesting: { cliff: 3, duration: 12, type: "linear" as VestingType }
+      },
+      { 
         category: "Public Sale", 
-        percentage: 30,
+        percentage: 20,
         vesting: { cliff: 0, duration: 0, type: "cliff" as VestingType }
       },
       { 
-        category: "Treasury", 
-        percentage: 50,
+        category: "Community", 
+        percentage: 20,
+        vesting: { cliff: 0, duration: 24, type: "linear" as VestingType }
+      },
+      { 
+        category: "Ecosystem", 
+        percentage: 15,
         vesting: { cliff: 6, duration: 36, type: "linear" as VestingType }
+      },
+      { 
+        category: "Treasury", 
+        percentage: 15,
+        vesting: { cliff: 6, duration: 48, type: "linear" as VestingType }
       }
     ],
     marketCondition: "neutral"
