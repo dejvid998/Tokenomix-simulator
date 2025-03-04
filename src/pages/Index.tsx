@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { TokenDistributionChart } from "@/components/charts/TokenDistributionChart";
 import { TokenomicsForm } from "@/components/forms/TokenomicsForm";
 import { ProjectHeader } from "@/components/layout/ProjectHeader";
-import type { TokenomicsData } from '@/types/tokenomics';
+import type { TokenomicsData, VestingType } from '@/types/tokenomics';
 
 const Index = () => {
   const [tokenomicsData, setTokenomicsData] = React.useState<TokenomicsData>({
@@ -13,27 +13,27 @@ const Index = () => {
       { 
         category: "Team", 
         percentage: 20,
-        vesting: { cliff: 12, duration: 36, type: "linear" }
+        vesting: { cliff: 12, duration: 36, type: "linear" as VestingType }
       },
       { 
         category: "Advisors", 
         percentage: 5,
-        vesting: { cliff: 6, duration: 24, type: "linear" }
+        vesting: { cliff: 6, duration: 24, type: "linear" as VestingType }
       },
       { 
         category: "Public Sale", 
         percentage: 30,
-        vesting: { cliff: 0, duration: 0, type: "cliff" }
+        vesting: { cliff: 0, duration: 0, type: "cliff" as VestingType }
       },
       { 
         category: "Ecosystem", 
         percentage: 25,
-        vesting: { cliff: 3, duration: 48, type: "linear" }
+        vesting: { cliff: 3, duration: 48, type: "linear" as VestingType }
       },
       { 
         category: "Treasury", 
         percentage: 20,
-        vesting: { cliff: 6, duration: 36, type: "linear" }
+        vesting: { cliff: 6, duration: 36, type: "linear" as VestingType }
       }
     ],
     marketCondition: "neutral"
