@@ -1,11 +1,13 @@
-
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Select } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import { Download, Save } from 'lucide-react';
+import type { TokenomicsData, VestingType, MarketCondition } from '@/types/tokenomics';
 
 interface VestingSchedule {
   cliff: number;
@@ -34,24 +36,24 @@ const TEMPLATES = {
   dao: {
     totalSupply: 1000000000,
     allocations: [
-      { category: "Community Treasury", percentage: 40, vesting: { cliff: 12, duration: 48, type: "linear" } },
-      { category: "Team", percentage: 15, vesting: { cliff: 12, duration: 36, type: "linear" } },
-      { category: "Early Contributors", percentage: 10, vesting: { cliff: 6, duration: 24, type: "linear" } },
-      { category: "Public Sale", percentage: 25, vesting: { cliff: 0, duration: 0, type: "cliff" } },
-      { category: "Ecosystem Growth", percentage: 10, vesting: { cliff: 3, duration: 36, type: "linear" } }
+      { category: "Community Treasury", percentage: 40, vesting: { cliff: 12, duration: 48, type: "linear" as VestingType } },
+      { category: "Team", percentage: 15, vesting: { cliff: 12, duration: 36, type: "linear" as VestingType } },
+      { category: "Early Contributors", percentage: 10, vesting: { cliff: 6, duration: 24, type: "exponential" as VestingType } },
+      { category: "Public Sale", percentage: 25, vesting: { cliff: 0, duration: 0, type: "cliff" as VestingType } },
+      { category: "Ecosystem Growth", percentage: 10, vesting: { cliff: 3, duration: 36, type: "linear" as VestingType } }
     ],
-    marketCondition: "neutral"
+    marketCondition: "neutral" as MarketCondition
   },
-  gamefi: {
+  defi: {
     totalSupply: 2000000000,
     allocations: [
-      { category: "Play Rewards", percentage: 35, vesting: { cliff: 3, duration: 48, type: "linear" } },
-      { category: "Team", percentage: 20, vesting: { cliff: 12, duration: 36, type: "linear" } },
-      { category: "Initial Game Assets", percentage: 15, vesting: { cliff: 0, duration: 24, type: "linear" } },
-      { category: "Public Sale", percentage: 20, vesting: { cliff: 0, duration: 0, type: "cliff" } },
-      { category: "Marketing", percentage: 10, vesting: { cliff: 1, duration: 24, type: "linear" } }
+      { category: "Protocol Treasury", percentage: 35, vesting: { cliff: 3, duration: 48, type: "linear" as VestingType } },
+      { category: "Team", percentage: 20, vesting: { cliff: 12, duration: 36, type: "linear" as VestingType } },
+      { category: "Liquidity Mining", percentage: 15, vesting: { cliff: 0, duration: 24, type: "exponential" as VestingType } },
+      { category: "Public Sale", percentage: 20, vesting: { cliff: 0, duration: 0, type: "cliff" as VestingType } },
+      { category: "Marketing", percentage: 10, vesting: { cliff: 1, duration: 24, type: "linear" as VestingType } }
     ],
-    marketCondition: "neutral"
+    marketCondition: "neutral" as MarketCondition
   }
 };
 
@@ -95,8 +97,7 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
     toast.success("Template applied successfully!");
   };
 
-  const handleExportReport = () => {
-    // Basic CSV export
+  const handleExportCSV = () => {
     const csvContent = [
       ["Category", "Percentage", "Cliff (months)", "Vesting Duration (months)", "Vesting Type"],
       ...data.allocations.map(a => [
@@ -116,7 +117,7 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
     a.click();
     window.URL.revokeObjectURL(url);
     
-    toast.success("Report downloaded successfully!");
+    toast.success("CSV report downloaded successfully!");
   };
 
   return (
@@ -131,10 +132,10 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
         </Button>
         <Button 
           variant="outline" 
-          onClick={() => handleTemplateSelect("gamefi")}
+          onClick={() => handleTemplateSelect("defi")}
           className="flex-1"
         >
-          Load GameFi Template
+          Load DeFi Template
         </Button>
       </div>
 
@@ -155,7 +156,7 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
         </h4>
         
         {data.allocations.map((allocation, index) => (
-          <div key={allocation.category} className="space-y-4 p-4 border rounded-lg">
+          <Card key={allocation.category} className="p-4 space-y-4">
             <div className="flex justify-between items-center">
               <Label>{allocation.category}</Label>
               <span className="text-sm text-zinc-500">
@@ -197,13 +198,20 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
               <Label>Vesting Type</Label>
               <Select
                 value={allocation.vesting.type}
-                onValueChange={(value: "linear" | "cliff") => handleVestingChange(index, "type", value)}
+                onValueChange={(value: VestingType) => handleVestingChange(index, "type", value)}
               >
-                <option value="linear">Linear</option>
-                <option value="cliff">Cliff</option>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="linear">Linear</SelectItem>
+                  <SelectItem value="cliff">Cliff</SelectItem>
+                  <SelectItem value="exponential">Exponential</SelectItem>
+                  <SelectItem value="custom">Custom</SelectItem>
+                </SelectContent>
               </Select>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 
@@ -213,25 +221,33 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
         </h4>
         <Select
           value={data.marketCondition}
-          onValueChange={(value: "bull" | "bear" | "neutral") => 
+          onValueChange={(value: MarketCondition) => 
             onChange({ ...data, marketCondition: value })}
         >
-          <option value="bull">Bull Market</option>
-          <option value="bear">Bear Market</option>
-          <option value="neutral">Neutral Market</option>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="bull">Bull Market</SelectItem>
+            <SelectItem value="bear">Bear Market</SelectItem>
+            <SelectItem value="neutral">Neutral Market</SelectItem>
+            <SelectItem value="shock">Liquidity Shock</SelectItem>
+          </SelectContent>
         </Select>
       </div>
 
       <div className="flex gap-4">
-        <Button className="flex-1">
+        <Button className="flex-1" onClick={() => toast.success("Configuration saved!")}>
+          <Save className="mr-2" />
           Save Configuration
         </Button>
         <Button 
           variant="outline"
-          onClick={handleExportReport}
+          onClick={handleExportCSV}
           className="flex-1"
         >
-          Export Report
+          <Download className="mr-2" />
+          Export CSV
         </Button>
       </div>
     </div>
