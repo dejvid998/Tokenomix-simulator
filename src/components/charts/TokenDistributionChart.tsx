@@ -21,7 +21,7 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
           <Pie
             data={data}
             cx="50%"
-            cy="50%"
+            cy="45%"
             labelLine={false}
             outerRadius={150}
             fill="#8884d8"
@@ -38,7 +38,7 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
             ))}
           </Pie>
           <Tooltip />
-          <Legend verticalAlign="bottom" height={36} />
+          <Legend verticalAlign="bottom" height={60} />
         </PieChart>
       </ResponsiveContainer>
     </div>
