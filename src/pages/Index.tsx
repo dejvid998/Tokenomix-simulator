@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { TokenDistributionChart } from "@/components/charts/TokenDistributionChart";
+import { TokenUnlockChart } from "@/components/charts/TokenUnlockChart";
 import { TokenomicsForm } from "@/components/forms/TokenomicsForm";
 import { TokenomicsQuestionnaire } from "@/components/forms/tokenomics/TokenomicsQuestionnaire";
 import { ProjectHeader } from "@/components/layout/ProjectHeader";
@@ -63,6 +63,20 @@ const Index = () => {
             <Card className="p-8 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl">
               <div className="hover:scale-[1.02] transition-transform duration-300">
                 <TokenDistributionChart data={tokenomicsData.allocations} />
+              </div>
+            </Card>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 tracking-wide uppercase">
+              Token Unlock Schedule
+            </h3>
+            <Card className="p-8 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl">
+              <div className="hover:scale-[1.02] transition-transform duration-300">
+                <TokenUnlockChart 
+                  data={tokenomicsData.allocations}
+                  totalSupply={tokenomicsData.totalSupply}
+                />
               </div>
             </Card>
           </div>
