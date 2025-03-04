@@ -1,9 +1,11 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card } from "@/components/ui/card";
+import { Download } from 'lucide-react';
+import { toast } from "sonner";
+import * as XLSX from 'xlsx';
 
 interface QuestionnaireData {
   launchingToken: string;
@@ -89,6 +91,61 @@ export const TokenomicsQuestionnaire = () => {
     }
   ];
 
+  const handleExportXLSX = () => {
+    try {
+      const wsData = [
+        ['Question', 'Answer'],
+        ...questions.map(q => [
+          q.question,
+          answers[q.id as keyof QuestionnaireData] || 'Not answered'
+        ])
+      ];
+
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+      // Style headers
+      const range = XLSX.utils.decode_range(ws['!ref'] || 'A1');
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const address = XLSX.utils.encode_col(C) + '1';
+        if (!ws[address]) continue;
+        ws[address].s = {
+          font: { bold: true },
+          fill: { fgColor: { rgb: "4F46E5" }, patternType: 'solid' }
+        };
+      }
+
+      XLSX.utils.book_append_sheet(wb, ws, 'Questionnaire');
+      XLSX.writeFile(wb, 'tokenomics-questionnaire.xlsx');
+      
+      toast.success("Questionnaire exported successfully!");
+    } catch (error) {
+      toast.error("Failed to export questionnaire");
+    }
+  };
+
+  const handleExportCSV = () => {
+    try {
+      let csvContent = "Question,Answer\n";
+      questions.forEach(q => {
+        const answer = answers[q.id as keyof QuestionnaireData] || 'Not answered';
+        csvContent += `"${q.question}","${answer}"\n`;
+      });
+
+      const blob = new Blob([csvContent], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "tokenomics-questionnaire.csv";
+      a.click();
+      window.URL.revokeObjectURL(url);
+      
+      toast.success("Questionnaire exported successfully!");
+    } catch (error) {
+      toast.error("Failed to export questionnaire");
+    }
+  };
+
   return (
     <Card className="p-6 space-y-6">
       <div className="space-y-6">
@@ -112,6 +169,25 @@ export const TokenomicsQuestionnaire = () => {
             </RadioGroup>
           </div>
         ))}
+      </div>
+      
+      <div className="flex gap-2 pt-4">
+        <Button 
+          variant="outline"
+          onClick={handleExportXLSX}
+          className="flex-1"
+        >
+          <Download className="mr-2" />
+          Export XLSX
+        </Button>
+        <Button 
+          variant="outline"
+          onClick={handleExportCSV}
+          className="flex-1"
+        >
+          <Download className="mr-2" />
+          Export CSV
+        </Button>
       </div>
     </Card>
   );
