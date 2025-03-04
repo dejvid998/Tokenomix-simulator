@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine } from 'recharts';
 import type { TokenAllocation } from '@/types/tokenomics';
@@ -89,7 +88,7 @@ export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
       <ResponsiveContainer width="100%" height={400}>
         <LineChart
           data={chartData}
-          margin={{ top: 20, right: 30, left: 40, bottom: 20 }}
+          margin={{ top: 20, right: 30, left: 40, bottom: 35 }}
         >
           <CartesianGrid 
             strokeDasharray="3 3" 
@@ -147,7 +146,11 @@ export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
           />
           <Legend 
             verticalAlign="bottom" 
-            height={36}
+            height={45}
+            wrapperStyle={{
+              paddingTop: '20px',
+              bottom: '0px'
+            }}
             formatter={(value) => (
               <span style={{ color: '#555555', fontSize: '12px', fontWeight: 500 }}>
                 {value}
