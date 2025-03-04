@@ -56,27 +56,27 @@ const Index = () => {
         <ProjectHeader />
         
         <div className="space-y-8 mt-12">
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 tracking-wide uppercase">
+              Token Distribution
+            </h3>
             <Card className="p-8 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl">
-              <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-6 tracking-wide uppercase">
-                Token Distribution
-              </h3>
               <div className="hover:scale-[1.02] transition-transform duration-300">
                 <TokenDistributionChart data={tokenomicsData.allocations} />
               </div>
             </Card>
+          </div>
 
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 tracking-wide uppercase">
-                Configure Tokenomics
-              </h3>
-              <Card className="p-6 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/50 dark:border-zinc-700/50 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl">
-                <TokenomicsForm 
-                  data={tokenomicsData} 
-                  onChange={setTokenomicsData} 
-                />
-              </Card>
-            </div>
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 tracking-wide uppercase">
+              Configure Tokenomics
+            </h3>
+            <Card className="p-6 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/50 dark:border-zinc-700/50 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl">
+              <TokenomicsForm 
+                data={tokenomicsData} 
+                onChange={setTokenomicsData} 
+              />
+            </Card>
           </div>
 
           <div className="space-y-4">
