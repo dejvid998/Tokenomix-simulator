@@ -8,6 +8,7 @@ import { Download, Save, Plus } from 'lucide-react';
 import type { TokenomicsData, TokenAllocation, MarketCondition } from '@/types/tokenomics';
 import { TemplateButtons } from './tokenomics/TemplateButtons';
 import { AllocationCard } from './tokenomics/AllocationCard';
+import * as XLSX from 'xlsx';
 
 interface Props {
   data: TokenomicsData;
@@ -84,6 +85,52 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
       toast.success("CSV report downloaded successfully!");
     } catch (error) {
       toast.error("Failed to export CSV");
+    }
+  };
+
+  const handleExportXLSX = () => {
+    try {
+      // Create worksheet data
+      const wsData = [
+        ['Category', 'Percentage', 'Cliff (months)', 'Vesting Duration (months)', 'Vesting Type', 'Token Amount'],
+        ...data.allocations.map(a => [
+          a.category,
+          a.percentage,
+          a.vesting.cliff,
+          a.vesting.duration,
+          a.vesting.type,
+          (a.percentage / 100) * data.totalSupply
+        ]),
+        [], // Empty row for spacing
+        ['Project Details'],
+        ['Total Supply', data.totalSupply],
+        ['Market Condition', data.marketCondition]
+      ];
+
+      // Create workbook and worksheet
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+      // Style the cells
+      const range = XLSX.utils.decode_range(ws['!ref'] || 'A1');
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const address = XLSX.utils.encode_col(C) + '1';
+        if (!ws[address]) continue;
+        ws[address].s = {
+          font: { bold: true },
+          fill: { fgColor: { rgb: "4F46E5" }, patternType: 'solid' }
+        };
+      }
+
+      // Add the worksheet to the workbook
+      XLSX.utils.book_append_sheet(wb, ws, 'Tokenomics');
+
+      // Save the file
+      XLSX.writeFile(wb, 'tokenomics-report.xlsx');
+      
+      toast.success("XLSX report downloaded successfully!");
+    } catch (error) {
+      toast.error("Failed to export XLSX");
     }
   };
 
@@ -206,14 +253,24 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
           <Save className="mr-2" />
           Save Configuration
         </Button>
-        <Button 
-          variant="outline"
-          onClick={handleExportCSV}
-          className="flex-1"
-        >
-          <Download className="mr-2" />
-          Export CSV
-        </Button>
+        <div className="flex gap-2 flex-1">
+          <Button 
+            variant="outline"
+            onClick={handleExportCSV}
+            className="flex-1"
+          >
+            <Download className="mr-2" />
+            Export CSV
+          </Button>
+          <Button 
+            variant="outline"
+            onClick={handleExportXLSX}
+            className="flex-1"
+          >
+            <Download className="mr-2" />
+            Export XLSX
+          </Button>
+        </div>
       </div>
     </div>
   );
