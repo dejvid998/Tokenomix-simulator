@@ -1,7 +1,14 @@
 
 import React from 'react';
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import type { TokenAllocation } from '@/types/tokenomics';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface Props {
   data: TokenAllocation[];
@@ -9,68 +16,83 @@ interface Props {
 }
 
 export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
-  // Calculate unlocks for each month (0-12)
+  // Calculate unlocks for each category and month (1-12)
   const calculateUnlocks = () => {
-    const monthlyData = Array.from({ length: 13 }, (_, month) => {
-      const unlocksByCategory = data.map(allocation => {
-        const { percentage, vesting } = allocation;
-        const tokens = (percentage / 100) * totalSupply;
+    return data.map(allocation => {
+      const { category, percentage, vesting } = allocation;
+      const tokens = (percentage / 100) * totalSupply;
+      
+      // Calculate unlock values for each month
+      const monthlyUnlocks = Array.from({ length: 12 }, (_, month) => {
+        const currentMonth = month + 1; // 1-based month number
         
-        if (month < vesting.cliff) return 0;
+        if (currentMonth < vesting.cliff) return 0;
         
         if (vesting.type === 'cliff') {
-          return month >= vesting.cliff ? tokens : 0;
+          return currentMonth >= vesting.cliff ? tokens : 0;
         }
         
         // Linear vesting after cliff
         const vestingMonths = vesting.duration - vesting.cliff;
         if (vestingMonths <= 0) return tokens;
         
-        const monthsVested = Math.max(0, month - vesting.cliff);
+        const monthsVested = Math.max(0, currentMonth - vesting.cliff);
         const vestingProgress = Math.min(monthsVested / vestingMonths, 1);
         
         return tokens * vestingProgress;
       });
 
-      const totalUnlocked = unlocksByCategory.reduce((sum, amount) => sum + amount, 0);
-      const percentUnlocked = (totalUnlocked / totalSupply) * 100;
-
       return {
-        month: month,
-        unlocked: percentUnlocked.toFixed(2)
+        category,
+        totalAllocation: tokens,
+        monthlyUnlocks
       };
     });
-
-    return monthlyData;
   };
 
+  const unlockData = calculateUnlocks();
+  
+  // Calculate totals for each month
+  const monthlyTotals = Array.from({ length: 12 }, (_, month) => {
+    return unlockData.reduce((sum, row) => sum + row.monthlyUnlocks[month], 0);
+  });
+
   return (
-    <ResponsiveContainer width="100%" height={400}>
-      <LineChart
-        data={calculateUnlocks()}
-        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis 
-          dataKey="month" 
-          label={{ value: 'Months', position: 'insideBottom', offset: -5 }}
-        />
-        <YAxis 
-          label={{ value: 'Tokens Unlocked (%)', angle: -90, position: 'insideLeft' }}
-        />
-        <Tooltip 
-          formatter={(value: any) => [`${value}%`, 'Unlocked']}
-          labelFormatter={(label: any) => `Month ${label}`}
-        />
-        <Legend />
-        <Line 
-          type="monotone" 
-          dataKey="unlocked" 
-          stroke="#8884d8" 
-          name="Token Unlock %" 
-          strokeWidth={2}
-        />
-      </LineChart>
-    </ResponsiveContainer>
+    <div className="overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[200px]">Unlock Value</TableHead>
+            {Array.from({ length: 12 }, (_, i) => (
+              <TableHead key={i + 1} className="text-right">
+                {i + 1}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {unlockData.map((row, index) => (
+            <TableRow key={index}>
+              <TableCell className="font-medium bg-muted/50">
+                {row.category} ({((row.totalAllocation / totalSupply) * 100).toFixed(1)}%)
+              </TableCell>
+              {row.monthlyUnlocks.map((value, month) => (
+                <TableCell key={month} className="text-right">
+                  {value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+          <TableRow className="font-bold">
+            <TableCell>Total</TableCell>
+            {monthlyTotals.map((total, month) => (
+              <TableCell key={month} className="text-right">
+                {total.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
   );
 };
