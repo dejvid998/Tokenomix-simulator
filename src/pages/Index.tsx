@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { TokenDistributionChart } from "@/components/charts/TokenDistributionChart";
+import { TokenUnlockChart } from "@/components/charts/TokenUnlockChart";
 import { TokenomicsForm } from "@/components/forms/TokenomicsForm";
 import { TokenomicsQuestionnaire } from "@/components/forms/tokenomics/TokenomicsQuestionnaire";
 import { ProjectHeader } from "@/components/layout/ProjectHeader";
@@ -61,6 +62,16 @@ const Index = () => {
               Token Distribution
             </h3>
             <TokenDistributionChart data={tokenomicsData.allocations} />
+          </Card>
+
+          <Card className="p-6 backdrop-blur-sm bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-700">
+            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-4">
+              Token Unlock Schedule (12 Months)
+            </h3>
+            <TokenUnlockChart 
+              data={tokenomicsData.allocations} 
+              totalSupply={tokenomicsData.totalSupply}
+            />
           </Card>
 
           <div className="grid lg:grid-cols-2 gap-8">
