@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine } from 'recharts';
 import type { TokenAllocation } from '@/types/tokenomics';
 
 interface Props {
@@ -9,7 +9,6 @@ interface Props {
 }
 
 export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
-  // Calculate unlocks for each category and month (1-12)
   const calculateUnlocks = () => {
     const monthlyData = Array.from({ length: 12 }, (_, month) => {
       const monthNumber = month + 1;
@@ -48,6 +47,23 @@ export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
     return monthlyData;
   };
 
+  const formatTokenAmount = (value: number) => {
+    if (value >= 1000000000) {
+      return `${(value / 1000000000).toFixed(2)}B`;
+    } else if (value >= 1000000) {
+      return `${(value / 1000000).toFixed(2)}M`;
+    } else if (value >= 1000) {
+      return `${(value / 1000).toFixed(2)}K`;
+    }
+    return value.toFixed(2);
+  };
+
+  const formatTooltipValue = (value: number, name: string) => {
+    const formattedAmount = formatTokenAmount(value);
+    const percentage = ((value / totalSupply) * 100).toFixed(2);
+    return [`${formattedAmount} (${percentage}%)`, name];
+  };
+
   const colors = [
     "#2563eb", "#dc2626", "#2dd4bf", "#f59e0b", 
     "#8b5cf6", "#ec4899", "#10b981", "#6366f1"
@@ -56,47 +72,107 @@ export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
   const chartData = calculateUnlocks();
   const categories = data.map(d => d.category);
 
+  // Find months with cliff unlock events
+  const cliffMonths = data.map(allocation => allocation.vesting.cliff)
+    .filter(cliff => cliff > 0);
+
   return (
-    <ResponsiveContainer width="100%" height={400}>
-      <LineChart
-        data={chartData}
-        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" opacity={0.5} />
-        <XAxis 
-          dataKey="month" 
-          label={{ value: 'Months', position: 'insideBottom', offset: -5 }}
-        />
-        <YAxis 
-          label={{ value: 'Tokens Unlocked', angle: -90, position: 'insideLeft', offset: -5 }}
-        />
-        <Tooltip 
-          formatter={(value: number) => [
-            value.toLocaleString(undefined, { maximumFractionDigits: 0 }),
-            'Tokens'
-          ]}
-        />
-        <Legend />
-        {categories.map((category, index) => (
-          <Line
-            key={category}
-            type="monotone"
-            dataKey={category}
-            stroke={colors[index % colors.length]}
-            strokeWidth={2}
-            dot={false}
-            name={category}
+    <div className="space-y-4">
+      <div className="flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400">
+        <div>
+          Total Supply: {formatTokenAmount(totalSupply)} tokens
+        </div>
+        <div className="flex gap-2 items-center">
+          <span className="h-2 w-2 rounded-full bg-zinc-800 dark:bg-white" />
+          <span>Total Unlocked</span>
+        </div>
+      </div>
+      
+      <ResponsiveContainer width="100%" height={400}>
+        <LineChart
+          data={chartData}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid 
+            strokeDasharray="3 3" 
+            opacity={0.5}
+            stroke="#9ca3af"
           />
-        ))}
-        <Line
-          type="monotone"
-          dataKey="total"
-          stroke="#374151"
-          strokeWidth={3}
-          dot={false}
-          name="Total"
-        />
-      </LineChart>
-    </ResponsiveContainer>
+          <XAxis 
+            dataKey="month" 
+            label={{ 
+              value: 'Months After TGE', 
+              position: 'insideBottom', 
+              offset: -5,
+              fill: '#6b7280'
+            }}
+            tick={{ fill: '#6b7280' }}
+          />
+          <YAxis 
+            label={{ 
+              value: 'Tokens Unlocked', 
+              angle: -90, 
+              position: 'insideLeft', 
+              offset: 0,
+              fill: '#6b7280'
+            }}
+            tickFormatter={formatTokenAmount}
+            tick={{ fill: '#6b7280' }}
+          />
+          <Tooltip 
+            formatter={formatTooltipValue}
+            contentStyle={{
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              borderRadius: '8px',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+            }}
+          />
+          <Legend 
+            verticalAlign="bottom" 
+            height={36}
+            formatter={(value) => <span className="text-sm">{value}</span>}
+          />
+          
+          {/* Add reference lines for cliff periods */}
+          {cliffMonths.map((month, index) => (
+            <ReferenceLine
+              key={`cliff-${month}-${index}`}
+              x={month}
+              stroke="#9ca3af"
+              strokeDasharray="3 3"
+              label={{
+                value: `Cliff End`,
+                position: 'top',
+                fill: '#6b7280',
+                fontSize: 12
+              }}
+            />
+          ))}
+
+          {categories.map((category, index) => (
+            <Line
+              key={category}
+              type="monotone"
+              dataKey={category}
+              stroke={colors[index % colors.length]}
+              strokeWidth={2}
+              dot={false}
+              name={category}
+              activeDot={{ r: 6, strokeWidth: 0 }}
+            />
+          ))}
+          <Line
+            type="monotone"
+            dataKey="total"
+            stroke="#374151"
+            strokeWidth={3}
+            dot={false}
+            name="Total"
+            activeDot={{ r: 6, strokeWidth: 0 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
