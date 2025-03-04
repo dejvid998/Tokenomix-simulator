@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -63,26 +62,29 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
   };
 
   const handleExportCSV = () => {
-    const csvContent = [
-      ["Category", "Percentage", "Cliff (months)", "Vesting Duration (months)", "Vesting Type"],
-      ...data.allocations.map(a => [
-        a.category,
-        a.percentage,
-        a.vesting.cliff,
-        a.vesting.duration,
-        a.vesting.type
-      ])
-    ].map(row => row.join(",")).join("\n");
+    try {
+      let csvContent = "Category,Percentage,Cliff (months),Vesting Duration (months),Vesting Type,Token Amount\n";
+      
+      data.allocations.forEach(a => {
+        const tokenAmount = (a.percentage / 100) * data.totalSupply;
+        csvContent += `${a.category},${a.percentage},${a.vesting.cliff},${a.vesting.duration},${a.vesting.type},${tokenAmount}\n`;
+      });
+      
+      csvContent += `\nTotal Supply,${data.totalSupply}\n`;
+      csvContent += `Market Condition,${data.marketCondition}\n`;
 
-    const blob = new Blob([csvContent], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "tokenomics-report.csv";
-    a.click();
-    window.URL.revokeObjectURL(url);
-    
-    toast.success("CSV report downloaded successfully!");
+      const blob = new Blob([csvContent], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "tokenomics-report.csv";
+      a.click();
+      window.URL.revokeObjectURL(url);
+      
+      toast.success("CSV report downloaded successfully!");
+    } catch (error) {
+      toast.error("Failed to export CSV");
+    }
   };
 
   const handleAddAllocation = () => {
@@ -115,6 +117,23 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
       allocations: newAllocations
     });
     toast.success("Team allocation removed!");
+  };
+
+  const handleSaveConfiguration = () => {
+    try {
+      localStorage.setItem('tokenomics-config', JSON.stringify(data));
+      
+      const totalPercentage = data.allocations.reduce((sum, allocation) => sum + allocation.percentage, 0);
+      
+      if (totalPercentage !== 100) {
+        toast.error("Total allocation must equal 100%");
+        return;
+      }
+      
+      toast.success("Configuration saved successfully!");
+    } catch (error) {
+      toast.error("Failed to save configuration");
+    }
   };
 
   return (
@@ -183,7 +202,7 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
       </div>
 
       <div className="flex gap-4">
-        <Button className="flex-1" onClick={() => toast.success("Configuration saved!")}>
+        <Button className="flex-1" onClick={handleSaveConfiguration}>
           <Save className="mr-2" />
           Save Configuration
         </Button>
