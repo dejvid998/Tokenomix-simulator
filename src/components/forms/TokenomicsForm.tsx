@@ -17,10 +17,15 @@ interface Props {
 
 export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
   const handleTotalSupplyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const numericValue = e.target.value.replace(/[^0-9]/g, '');
     onChange({
       ...data,
-      totalSupply: Number(e.target.value)
+      totalSupply: Number(numericValue)
     });
+  };
+
+  const formatNumber = (num: number) => {
+    return num.toLocaleString('en-US');
   };
 
   const handleCategoryChange = (index: number, value: string) => {
@@ -191,8 +196,8 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
         <Label htmlFor="totalSupply">Total Token Supply</Label>
         <Input
           id="totalSupply"
-          type="number"
-          value={data.totalSupply}
+          type="text"
+          value={formatNumber(data.totalSupply)}
           onChange={handleTotalSupplyChange}
           className="font-mono"
         />
