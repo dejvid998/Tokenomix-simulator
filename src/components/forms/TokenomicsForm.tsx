@@ -67,32 +67,6 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
     });
   };
 
-  const handleExportCSV = () => {
-    try {
-      let csvContent = "Category,Percentage,Cliff (months),Vesting Duration (months),Vesting Type,Token Amount\n";
-      
-      data.allocations.forEach(a => {
-        const tokenAmount = (a.percentage / 100) * data.totalSupply;
-        csvContent += `${a.category},${a.percentage},${a.vesting.cliff},${a.vesting.duration},${a.vesting.type},${tokenAmount}\n`;
-      });
-      
-      csvContent += `\nTotal Supply,${data.totalSupply}\n`;
-      csvContent += `Market Condition,${data.marketCondition}\n`;
-
-      const blob = new Blob([csvContent], { type: "text/csv" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "tokenomics-report.csv";
-      a.click();
-      window.URL.revokeObjectURL(url);
-      
-      toast.success("CSV report downloaded successfully!");
-    } catch (error) {
-      toast.error("Failed to export CSV");
-    }
-  };
-
   const handleExportXLSX = () => {
     try {
       // Create worksheet data
@@ -258,24 +232,14 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
           <Save className="mr-2" />
           Save Configuration
         </Button>
-        <div className="flex gap-2 flex-1">
-          <Button 
-            variant="outline"
-            onClick={handleExportCSV}
-            className="flex-1"
-          >
-            <Download className="mr-2" />
-            Export CSV
-          </Button>
-          <Button 
-            variant="outline"
-            onClick={handleExportXLSX}
-            className="flex-1"
-          >
-            <Download className="mr-2" />
-            Export XLSX
-          </Button>
-        </div>
+        <Button 
+          variant="outline"
+          onClick={handleExportXLSX}
+          className="flex-1"
+        >
+          <Download className="mr-2" />
+          Export XLSX
+        </Button>
       </div>
     </div>
   );
