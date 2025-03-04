@@ -9,8 +9,9 @@ interface Props {
 }
 
 export const TemplateButtons = ({ onTemplateSelect }: Props) => {
-  const handleTemplateSelect = (template: keyof typeof TEMPLATES) => {
-    onTemplateSelect(TEMPLATES[template]);
+  const handleTemplateSelect = (templateKey: "dao" | "defi") => {
+    const selectedTemplate = { ...TEMPLATES[templateKey] };
+    onTemplateSelect(selectedTemplate);
     toast.success("Template applied successfully!");
   };
 

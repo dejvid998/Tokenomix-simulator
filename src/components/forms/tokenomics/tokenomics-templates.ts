@@ -1,7 +1,7 @@
 
 import type { TokenomicsData, VestingType } from '@/types/tokenomics';
 
-export const TEMPLATES = {
+export const TEMPLATES: Record<string, TokenomicsData> = {
   dao: {
     totalSupply: 1000000000,
     allocations: [
@@ -24,4 +24,4 @@ export const TEMPLATES = {
     ],
     marketCondition: "neutral"
   }
-} as const;
+};
