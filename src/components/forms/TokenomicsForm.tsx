@@ -6,7 +6,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Download, Save } from 'lucide-react';
+import { Download, Save, Plus, Trash2 } from 'lucide-react';
 import type { TokenomicsData, TokenAllocation, VestingType, MarketCondition } from '@/types/tokenomics';
 
 interface Props {
@@ -102,6 +102,38 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
     toast.success("CSV report downloaded successfully!");
   };
 
+  const handleAddAllocation = () => {
+    const newAllocation: TokenAllocation = {
+      category: "New Team",
+      percentage: 0,
+      vesting: { cliff: 0, duration: 12, type: "linear" }
+    };
+    
+    onChange({
+      ...data,
+      allocations: [...data.allocations, newAllocation]
+    });
+    toast.success("New team allocation added!");
+  };
+
+  const handleRemoveAllocation = (index: number) => {
+    const totalRemainingPercentage = data.allocations
+      .filter((_, i) => i !== index)
+      .reduce((sum, allocation) => sum + allocation.percentage, 0);
+
+    if (totalRemainingPercentage > 100) {
+      toast.error("Total allocation cannot exceed 100%");
+      return;
+    }
+
+    const newAllocations = data.allocations.filter((_, i) => i !== index);
+    onChange({
+      ...data,
+      allocations: newAllocations
+    });
+    toast.success("Team allocation removed!");
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex gap-4">
@@ -132,20 +164,53 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
         />
       </div>
 
-      <div className="space-y-4">
+      <div className="flex justify-between items-center">
         <h4 className="font-medium text-sm text-zinc-900 dark:text-zinc-100">
           Token Allocation & Vesting
         </h4>
-        
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleAddAllocation}
+          className="flex gap-2 items-center"
+        >
+          <Plus className="w-4 h-4" />
+          Add Team
+        </Button>
+      </div>
+
+      <div className="space-y-4">
         {data.allocations.map((allocation, index) => (
-          <Card key={allocation.category} className="p-4 space-y-4">
+          <Card key={`${allocation.category}-${index}`} className="p-4 space-y-4">
             <div className="flex justify-between items-center">
-              <Label>{allocation.category}</Label>
-              <span className="text-sm text-zinc-500">
-                {allocation.percentage}%
-              </span>
+              <div className="flex-1">
+                <Input
+                  value={allocation.category}
+                  onChange={(e) => {
+                    const newAllocations = [...data.allocations];
+                    newAllocations[index] = {
+                      ...allocation,
+                      category: e.target.value
+                    };
+                    onChange({ ...data, allocations: newAllocations });
+                  }}
+                  className="mb-2"
+                  placeholder="Team Name"
+                />
+                <span className="text-sm text-zinc-500">
+                  {allocation.percentage}%
+                </span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleRemoveAllocation(index)}
+                className="text-destructive hover:text-destructive/90"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
             </div>
-            
+
             <Slider
               value={[allocation.percentage]}
               min={0}

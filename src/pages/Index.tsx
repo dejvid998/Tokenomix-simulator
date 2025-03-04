@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { TokenDistributionChart } from "@/components/charts/TokenDistributionChart";
@@ -11,14 +10,9 @@ const Index = () => {
     totalSupply: 1000000000,
     allocations: [
       { 
-        category: "Team", 
+        category: "Core Team", 
         percentage: 20,
         vesting: { cliff: 12, duration: 36, type: "linear" as VestingType }
-      },
-      { 
-        category: "Advisors", 
-        percentage: 5,
-        vesting: { cliff: 6, duration: 24, type: "linear" as VestingType }
       },
       { 
         category: "Public Sale", 
@@ -26,13 +20,8 @@ const Index = () => {
         vesting: { cliff: 0, duration: 0, type: "cliff" as VestingType }
       },
       { 
-        category: "Ecosystem", 
-        percentage: 25,
-        vesting: { cliff: 3, duration: 48, type: "linear" as VestingType }
-      },
-      { 
         category: "Treasury", 
-        percentage: 20,
+        percentage: 50,
         vesting: { cliff: 6, duration: 36, type: "linear" as VestingType }
       }
     ],
