@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Download } from 'lucide-react';
 import { toast } from "sonner";
 import * as XLSX from 'xlsx';
+import { Document, Packer, Paragraph, TextRun } from 'docx';
 
 interface QuestionnaireData {
   launchingToken: string;
@@ -91,6 +92,60 @@ export const TokenomicsQuestionnaire = () => {
     }
   ];
 
+  const handleExportDOCX = () => {
+    try {
+      const doc = new Document({
+        sections: [{
+          properties: {},
+          children: [
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: "Tokenomics Questionnaire Responses",
+                  bold: true,
+                  size: 32,
+                }),
+              ],
+            }),
+            new Paragraph({
+              text: "",
+            }),
+            ...questions.map((q) => [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: q.question,
+                    bold: true,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: answers[q.id as keyof QuestionnaireData] || 'Not answered',
+                  }),
+                ],
+              }),
+              new Paragraph({ text: "" }), // Spacing between QA pairs
+            ]).flat(),
+          ],
+        }],
+      });
+
+      Packer.toBlob(doc).then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "tokenomics-questionnaire.docx";
+        a.click();
+        window.URL.revokeObjectURL(url);
+        toast.success("DOCX exported successfully!");
+      });
+    } catch (error) {
+      toast.error("Failed to export DOCX");
+    }
+  };
+
   const handleExportXLSX = () => {
     try {
       const wsData = [
@@ -172,6 +227,14 @@ export const TokenomicsQuestionnaire = () => {
       </div>
       
       <div className="flex gap-2 pt-4">
+        <Button 
+          variant="outline"
+          onClick={handleExportDOCX}
+          className="flex-1"
+        >
+          <Download className="mr-2" />
+          Export DOCX
+        </Button>
         <Button 
           variant="outline"
           onClick={handleExportXLSX}
