@@ -201,6 +201,7 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
                   onChange={(e) => handleCategoryChange(index, e.target.value)}
                   className="mb-2"
                   placeholder="Team Name"
+                  autoFocus={false}
                 />
                 <span className="text-sm text-zinc-500">
                   {allocation.percentage}%
