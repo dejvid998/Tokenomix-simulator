@@ -35,6 +35,17 @@ export const ProjectDetailsFields = ({ formData, onFieldChange }: ProjectDetails
       </div>
 
       <div className="space-y-2">
+        <Label htmlFor="totalSupply">Total Supply</Label>
+        <Input
+          id="totalSupply"
+          type="number"
+          value={formData.totalSupply}
+          onChange={(e) => onFieldChange('totalSupply', Number(e.target.value))}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
         <Label>Fundraising Method</Label>
         <Select
           value={formData.fundraisingMethod}
@@ -60,6 +71,28 @@ export const ProjectDetailsFields = ({ formData, onFieldChange }: ProjectDetails
           type="number"
           value={formData.tgeCirculatingSupply}
           onChange={(e) => onFieldChange('tgeCirculatingSupply', Number(e.target.value))}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="dexLiquidity">DEX Liquidity ($)</Label>
+        <Input
+          id="dexLiquidity"
+          type="number"
+          value={formData.dexLiquidity}
+          onChange={(e) => onFieldChange('dexLiquidity', Number(e.target.value))}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="lockupDuration">Lockup Duration (months)</Label>
+        <Input
+          id="lockupDuration"
+          type="number"
+          value={formData.lockupDuration}
+          onChange={(e) => onFieldChange('lockupDuration', Number(e.target.value))}
           required
         />
       </div>
