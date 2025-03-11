@@ -1,4 +1,3 @@
-
 export interface ValuationInput {
   fundraisingAmount: number;
   tokenPrice: number;
@@ -9,6 +8,13 @@ export interface ValuationInput {
   lockupDuration: number;
   projectCategory: 'DeFi' | 'GameFi' | 'NFT' | 'Infrastructure' | 'DAO';
   marketCondition: 'Bull' | 'Bear' | 'Neutral';
+}
+
+export interface RiskAnalysis {
+  type: 'warning' | 'error';
+  category: 'token_allocation' | 'supply_dynamics' | 'market' | 'stress_test';
+  message: string;
+  suggestion: string;
 }
 
 export interface ValuationOutput {
@@ -31,11 +37,7 @@ export interface ValuationOutput {
     mcap: number;
     performance: number;
   }[];
-  risks: {
-    type: 'warning' | 'error';
-    message: string;
-    suggestion: string;
-  }[];
+  risks: RiskAnalysis[];
 }
 
 export interface ValuationReport {

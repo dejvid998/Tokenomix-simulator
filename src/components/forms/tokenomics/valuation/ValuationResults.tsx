@@ -2,8 +2,8 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { AlertTriangle, TrendingUp, List } from "lucide-react";
-import type { ValuationOutput } from "@/types/valuation";
+import { AlertTriangle, TrendingUp, List, Shield, Activity } from "lucide-react";
+import type { ValuationOutput, RiskAnalysis } from "@/types/valuation";
 
 interface ValuationResultsProps {
   valuation: ValuationOutput;
@@ -17,6 +17,21 @@ export const ValuationResults = ({ valuation }: ValuationResultsProps) => {
       notation: 'compact',
       maximumFractionDigits: 1
     }).format(value);
+  };
+
+  const groupRisksByCategory = (risks: RiskAnalysis[]) => {
+    const categories = {
+      token_allocation: { title: "Token Allocation", icon: Shield },
+      supply_dynamics: { title: "Supply Dynamics", icon: Activity },
+      market: { title: "Market Risks", icon: TrendingUp },
+      stress_test: { title: "Stress Testing", icon: AlertTriangle }
+    };
+
+    return Object.entries(categories).map(([category, { title, icon: Icon }]) => ({
+      title,
+      Icon,
+      risks: risks.filter(risk => risk.category === category)
+    }));
   };
 
   return (
@@ -76,17 +91,29 @@ export const ValuationResults = ({ valuation }: ValuationResultsProps) => {
         </CardContent>
       </Card>
 
-      <div className="space-y-3">
-        {valuation.risks.map((risk, index) => (
-          <Alert key={index} variant={risk.type === 'error' ? 'destructive' : 'default'}>
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription className="flex flex-col gap-1">
-              <span className="font-medium">{risk.message}</span>
-              <span className="text-sm">{risk.suggestion}</span>
-            </AlertDescription>
-          </Alert>
-        ))}
-      </div>
+      {groupRisksByCategory(valuation.risks).map((category) => (
+        category.risks.length > 0 && (
+          <Card key={category.title}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <category.Icon className="h-5 w-5" />
+                {category.title} Analysis
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {category.risks.map((risk, index) => (
+                <Alert key={index} variant={risk.type === 'error' ? 'destructive' : 'default'}>
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription className="flex flex-col gap-1">
+                    <span className="font-medium">{risk.message}</span>
+                    <span className="text-sm">{risk.suggestion}</span>
+                  </AlertDescription>
+                </Alert>
+              ))}
+            </CardContent>
+          </Card>
+        )
+      ))}
     </div>
   );
 };

@@ -1,8 +1,60 @@
 
-import type { ValuationInput, ValuationOutput, ValuationReport } from '@/types/valuation';
+import type { ValuationInput, ValuationOutput, ValuationReport, RiskAnalysis } from '@/types/valuation';
 
 export class ValuationService {
-  // For now, using mock data. This would be replaced with actual AI model calls
+  private static analyzeTokenAllocation(input: ValuationInput): RiskAnalysis[] {
+    const risks: RiskAnalysis[] = [];
+    
+    // Team allocation risk (using TGE as proxy for now)
+    if (input.tgeCirculatingSupply > 30) {
+      risks.push({
+        type: 'error',
+        category: 'token_allocation',
+        message: "High initial token release",
+        suggestion: "Consider reducing TGE unlock percentage to improve price stability"
+      });
+    }
+
+    // Private sale dominance risk
+    if (input.fundraisingMethod === 'Private Sale' && input.fundraisingAmount > input.totalSupply * input.tokenPrice * 0.4) {
+      risks.push({
+        type: 'warning',
+        category: 'token_allocation',
+        message: "High private sale allocation",
+        suggestion: "Consider increasing public allocation for better token distribution"
+      });
+    }
+
+    return risks;
+  }
+
+  private static analyzeSupplyDynamics(input: ValuationInput): RiskAnalysis[] {
+    const risks: RiskAnalysis[] = [];
+
+    // Initial circulating supply risks
+    if (input.tgeCirculatingSupply < 5) {
+      risks.push({
+        type: 'warning',
+        category: 'supply_dynamics',
+        message: "Very low initial circulating supply",
+        suggestion: "Consider increasing initial circulation to improve market efficiency"
+      });
+    }
+
+    // Liquidity risks
+    const liquidityRatio = (input.dexLiquidity / (input.totalSupply * input.tokenPrice)) * 100;
+    if (liquidityRatio < 5) {
+      risks.push({
+        type: 'error',
+        category: 'supply_dynamics',
+        message: "Insufficient DEX liquidity ratio",
+        suggestion: "Increase initial liquidity to reduce price impact and volatility"
+      });
+    }
+
+    return risks;
+  }
+
   static async generateValuation(input: ValuationInput): Promise<ValuationOutput> {
     // Mock processing delay
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -10,6 +62,12 @@ export class ValuationService {
     const baseValuation = input.totalSupply * input.tokenPrice;
     const marketMultiplier = input.marketCondition === 'Bull' ? 1.2 : 
                             input.marketCondition === 'Bear' ? 0.8 : 1;
+
+    // Collect all risks from different analyzers
+    const allRisks = [
+      ...this.analyzeTokenAllocation(input),
+      ...this.analyzeSupplyDynamics(input)
+    ];
 
     return {
       fdvRange: {
@@ -39,18 +97,7 @@ export class ValuationService {
           performance: 15
         }
       ],
-      risks: [
-        {
-          type: input.tgeCirculatingSupply > 30 ? 'error' : 'warning',
-          message: "High initial circulating supply",
-          suggestion: "Consider reducing TGE unlock to improve token price stability"
-        },
-        {
-          type: input.dexLiquidity < baseValuation * 0.1 ? 'error' : 'warning',
-          message: "Low DEX liquidity ratio",
-          suggestion: "Increase initial liquidity to reduce price impact"
-        }
-      ]
+      risks: allRisks
     };
   }
 
