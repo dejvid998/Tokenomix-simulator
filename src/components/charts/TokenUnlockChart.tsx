@@ -9,7 +9,7 @@ interface Props {
 
 export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
   const calculateUnlocks = () => {
-    const monthlyData = Array.from({ length: 12 }, (_, month) => {
+    const monthlyData = Array.from({ length: 24 }, (_, month) => {
       const monthNumber = month + 1;
       const unlocksByCategory = data.reduce((acc, allocation) => {
         const { category, percentage, vesting } = allocation;
