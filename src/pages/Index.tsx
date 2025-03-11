@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { TokenDistributionChart } from "@/components/charts/TokenDistributionChart";
@@ -69,7 +68,7 @@ const Index = () => {
               Optimize & Simulate Your Tokenomics – In Seconds
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-              Instant Tokenomics Simulations, Investor-Ready Reports, AI-Backed Insights
+              Instant Tokenomics Simulations, Investor-Ready Reports
             </p>
             <div className="flex justify-center gap-4 flex-wrap">
               <Button 
