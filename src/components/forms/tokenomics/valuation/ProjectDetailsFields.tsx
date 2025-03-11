@@ -76,12 +76,45 @@ export const ProjectDetailsFields = ({ formData, onFieldChange }: ProjectDetails
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="dexLiquidity">DEX Liquidity ($)</Label>
+        <Label htmlFor="dexLiquidity">Initial DEX Liquidity ($)</Label>
         <Input
           id="dexLiquidity"
           type="number"
           value={formData.dexLiquidity}
           onChange={(e) => onFieldChange('dexLiquidity', Number(e.target.value))}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="initialStaking">Initial Staking APY (%)</Label>
+        <Input
+          id="initialStaking"
+          type="number"
+          value={formData.initialStaking}
+          onChange={(e) => onFieldChange('initialStaking', Number(e.target.value))}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="teamTokens">Team & Advisor Tokens (%)</Label>
+        <Input
+          id="teamTokens"
+          type="number"
+          value={formData.teamTokens}
+          onChange={(e) => onFieldChange('teamTokens', Number(e.target.value))}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="marketingBudget">Marketing Budget ($)</Label>
+        <Input
+          id="marketingBudget"
+          type="number"
+          value={formData.marketingBudget}
+          onChange={(e) => onFieldChange('marketingBudget', Number(e.target.value))}
           required
         />
       </div>

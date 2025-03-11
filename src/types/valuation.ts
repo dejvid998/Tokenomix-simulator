@@ -8,6 +8,9 @@ export interface ValuationInput {
   lockupDuration: number;
   projectCategory: 'DeFi' | 'GameFi' | 'NFT' | 'Infrastructure' | 'DAO';
   marketCondition: 'Bull' | 'Bear' | 'Neutral';
+  initialStaking: number;
+  teamTokens: number;
+  marketingBudget: number;
 }
 
 export interface RiskAnalysis {
