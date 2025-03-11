@@ -8,9 +8,12 @@ import { toast } from "sonner";
 import { ValuationService } from '@/services/valuationService';
 import type { ValuationInput, ValuationOutput } from '@/types/valuation';
 
-export const ValuationForm = () => {
+interface ValuationFormProps {
+  onValuationGenerated: (valuation: ValuationOutput) => void;
+}
+
+export const ValuationForm = ({ onValuationGenerated }: ValuationFormProps) => {
   const [loading, setLoading] = React.useState(false);
-  const [valuation, setValuation] = React.useState<ValuationOutput | null>(null);
   const [formData, setFormData] = React.useState<ValuationInput>({
     fundraisingAmount: 0,
     tokenPrice: 0,
@@ -29,7 +32,7 @@ export const ValuationForm = () => {
 
     try {
       const result = await ValuationService.generateValuation(formData);
-      setValuation(result);
+      onValuationGenerated(result);
       toast.success("Valuation estimate generated!");
     } catch (error) {
       toast.error("Failed to generate valuation");
@@ -48,9 +51,8 @@ export const ValuationForm = () => {
   };
 
   return (
-    <Card className="p-6 space-y-6">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="fundraisingAmount">Fundraising Amount ($)</Label>
             <Input
@@ -144,12 +146,15 @@ export const ValuationForm = () => {
           </div>
         </div>
 
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Calculating..." : "Generate Valuation Estimate"}
-        </Button>
-      </form>
+      <Button 
+        type="submit" 
+        className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600" 
+        disabled={loading}
+      >
+        {loading ? "Calculating..." : "Generate Valuation Estimate"}
+      </Button>
 
-      {valuation && (
+      {/* valuation && (
         <div className="space-y-4 pt-6 border-t">
           <div className="space-y-2">
             <h3 className="font-semibold">Estimated Valuation</h3>
@@ -199,7 +204,7 @@ export const ValuationForm = () => {
             </div>
           </div>
         </div>
-      )}
-    </Card>
+      ) */}
+    </form>
   );
 };

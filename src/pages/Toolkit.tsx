@@ -1,6 +1,6 @@
 
 import { TokenomicsQuestionnaire } from "@/components/forms/tokenomics/TokenomicsQuestionnaire";
-import { ValuationForm } from "@/components/forms/tokenomics/ValuationForm";
+import { ValuationSection } from "@/components/forms/tokenomics/ValuationSection";
 import { NavBar } from "@/components/layout/NavBar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -29,7 +29,7 @@ const Toolkit = () => {
                 <TokenomicsQuestionnaire />
               </TabsContent>
               <TabsContent value="valuation">
-                <ValuationForm />
+                <ValuationSection />
               </TabsContent>
             </Tabs>
           </div>
