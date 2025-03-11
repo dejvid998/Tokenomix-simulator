@@ -1,6 +1,8 @@
 
 import { TokenomicsQuestionnaire } from "@/components/forms/tokenomics/TokenomicsQuestionnaire";
+import { ValuationForm } from "@/components/forms/tokenomics/ValuationForm";
 import { NavBar } from "@/components/layout/NavBar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Toolkit = () => {
   return (
@@ -18,7 +20,18 @@ const Toolkit = () => {
           </div>
           
           <div className="max-w-4xl mx-auto">
-            <TokenomicsQuestionnaire />
+            <Tabs defaultValue="questionnaire" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="questionnaire">Launch Questionnaire</TabsTrigger>
+                <TabsTrigger value="valuation">Token Valuation</TabsTrigger>
+              </TabsList>
+              <TabsContent value="questionnaire">
+                <TokenomicsQuestionnaire />
+              </TabsContent>
+              <TabsContent value="valuation">
+                <ValuationForm />
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </div>
