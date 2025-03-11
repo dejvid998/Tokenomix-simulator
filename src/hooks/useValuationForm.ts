@@ -15,7 +15,10 @@ export const useValuationForm = (onValuationGenerated: (valuation: ValuationOutp
     dexLiquidity: 0,
     lockupDuration: 0,
     projectCategory: 'DeFi',
-    marketCondition: 'Neutral'
+    marketCondition: 'Neutral',
+    initialStaking: 0,
+    teamTokens: 0,
+    marketingBudget: 0
   });
 
   const handleFieldChange = (field: keyof ValuationInput, value: any) => {
