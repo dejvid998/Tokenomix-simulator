@@ -1,11 +1,13 @@
+
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { TokenDistributionChart } from "@/components/charts/TokenDistributionChart";
 import { TokenUnlockChart } from "@/components/charts/TokenUnlockChart";
 import { TokenomicsForm } from "@/components/forms/TokenomicsForm";
 import { NavBar } from "@/components/layout/NavBar";
-import type { TokenomicsData, TokenAllocation, VestingType } from '@/types/tokenomics';
+import type { TokenomicsData, TokenAllocation } from '@/types/tokenomics';
 import { Button } from "@/components/ui/button";
+import { Sparkles, BarChart } from "lucide-react";
 
 const Index = () => {
   const [tokenomicsData, setTokenomicsData] = React.useState<TokenomicsData>({
@@ -62,19 +64,30 @@ const Index = () => {
       <NavBar />
       <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-zinc-100 to-zinc-200 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900">
         <div className="container mx-auto px-4 py-16 md:py-24">
-          <div className="text-center space-y-6 mb-16">
+          <div className="text-center space-y-6 mb-16 animate-fade-in">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-              Optimize & Simulate Your Tokenomics Instantly
+              Optimize & Simulate Your Tokenomics – In Seconds
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-              Powered by AI – Generate Data-Driven Tokenomics Models
+              Instant Tokenomics Simulations, Investor-Ready Reports, AI-Backed Insights
             </p>
-            <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
-            >
-              Try Free Demo
-            </Button>
+            <div className="flex justify-center gap-4 flex-wrap">
+              <Button 
+                size="lg"
+                className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 scale-100 hover:scale-105 transition-all duration-300"
+              >
+                <BarChart className="mr-2" />
+                Start a New Simulation
+              </Button>
+              <Button 
+                variant="outline"
+                size="lg"
+                className="border-2 hover:bg-purple-500/10 scale-100 hover:scale-105 transition-all duration-300"
+              >
+                <Sparkles className="mr-2" />
+                AI-Generate a Token Model
+              </Button>
+            </div>
           </div>
 
           <div className="space-y-8">
