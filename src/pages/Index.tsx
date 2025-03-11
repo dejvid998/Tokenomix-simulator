@@ -6,7 +6,7 @@ import { TokenomicsForm } from "@/components/forms/TokenomicsForm";
 import { NavBar } from "@/components/layout/NavBar";
 import type { TokenomicsData, TokenAllocation, VestingType } from '@/types/tokenomics';
 import { Button } from "@/components/ui/button";
-import { Sparkles, BarChart } from "lucide-react";
+import { BarChart } from "lucide-react";
 
 const Index = () => {
   const [tokenomicsData, setTokenomicsData] = React.useState<TokenomicsData>({
@@ -77,14 +77,6 @@ const Index = () => {
               >
                 <BarChart className="mr-2" />
                 Start a New Simulation
-              </Button>
-              <Button 
-                variant="outline"
-                size="lg"
-                className="border-2 hover:bg-purple-500/10 scale-100 hover:scale-105 transition-all duration-300"
-              >
-                <Sparkles className="mr-2" />
-                AI-Generate a Token Model
               </Button>
             </div>
           </div>
