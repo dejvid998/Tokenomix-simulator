@@ -77,38 +77,22 @@ const Index = () => {
             </Button>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-8">
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 tracking-wide uppercase">
-                  Token Distribution
-                </h3>
-                <Card className="p-8 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl">
-                  <div className="hover:scale-[1.02] transition-transform duration-300">
-                    <TokenDistributionChart 
-                      data={tokenomicsData.allocations}
-                      onTemplateSelect={handleTemplateSelect}
-                    />
-                  </div>
-                </Card>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 tracking-wide uppercase">
-                  Token Unlock Schedule
-                </h3>
-                <Card className="p-8 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl">
-                  <div className="hover:scale-[1.02] transition-transform duration-300">
-                    <TokenUnlockChart 
-                      data={tokenomicsData.allocations}
-                      totalSupply={tokenomicsData.totalSupply}
-                    />
-                  </div>
-                </Card>
-              </div>
+          <div className="space-y-8">
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 tracking-wide uppercase">
+                Token Distribution
+              </h3>
+              <Card className="p-8 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl">
+                <div className="hover:scale-[1.02] transition-transform duration-300">
+                  <TokenDistributionChart 
+                    data={tokenomicsData.allocations}
+                    onTemplateSelect={handleTemplateSelect}
+                  />
+                </div>
+              </Card>
             </div>
 
-            <div className="space-y-4 lg:sticky lg:top-4 lg:h-fit">
+            <div className="space-y-4">
               <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 tracking-wide uppercase">
                 Configure Tokenomics
               </h3>
@@ -117,6 +101,20 @@ const Index = () => {
                   data={tokenomicsData} 
                   onChange={setTokenomicsData} 
                 />
+              </Card>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 tracking-wide uppercase">
+                Token Unlock Schedule
+              </h3>
+              <Card className="p-8 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl">
+                <div className="hover:scale-[1.02] transition-transform duration-300">
+                  <TokenUnlockChart 
+                    data={tokenomicsData.allocations}
+                    totalSupply={tokenomicsData.totalSupply}
+                  />
+                </div>
               </Card>
             </div>
           </div>
