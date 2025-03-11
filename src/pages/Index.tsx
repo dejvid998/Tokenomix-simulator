@@ -5,7 +5,7 @@ import { TokenDistributionChart } from "@/components/charts/TokenDistributionCha
 import { TokenUnlockChart } from "@/components/charts/TokenUnlockChart";
 import { TokenomicsForm } from "@/components/forms/TokenomicsForm";
 import { NavBar } from "@/components/layout/NavBar";
-import type { TokenomicsData, TokenAllocation } from '@/types/tokenomics';
+import type { TokenomicsData, TokenAllocation, VestingType } from '@/types/tokenomics';
 import { Button } from "@/components/ui/button";
 import { Sparkles, BarChart } from "lucide-react";
 
