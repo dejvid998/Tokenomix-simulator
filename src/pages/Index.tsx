@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { TokenDistributionChart } from "@/components/charts/TokenDistributionChart";
@@ -52,6 +51,13 @@ const Index = () => {
     marketCondition: "neutral"
   });
 
+  const handleTemplateSelect = (newAllocations: TokenAllocation[]) => {
+    setTokenomicsData(prev => ({
+      ...prev,
+      allocations: newAllocations
+    }));
+  };
+
   return (
     <>
       <NavBar />
@@ -80,7 +86,10 @@ const Index = () => {
                 </h3>
                 <Card className="p-8 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl">
                   <div className="hover:scale-[1.02] transition-transform duration-300">
-                    <TokenDistributionChart data={tokenomicsData.allocations} />
+                    <TokenDistributionChart 
+                      data={tokenomicsData.allocations}
+                      onTemplateSelect={handleTemplateSelect}
+                    />
                   </div>
                 </Card>
               </div>
