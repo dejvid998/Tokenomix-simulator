@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { ValuationService } from '@/services/valuationService';
 import type { ValuationInput, ValuationOutput } from '@/types/valuation';
 
 export const ValuationForm = () => {
@@ -18,7 +18,9 @@ export const ValuationForm = () => {
     totalSupply: 0,
     tgeCirculatingSupply: 0,
     dexLiquidity: 0,
-    lockupDuration: 0
+    lockupDuration: 0,
+    projectCategory: 'DeFi',
+    marketCondition: 'Neutral'
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,31 +28,8 @@ export const ValuationForm = () => {
     setLoading(true);
 
     try {
-      // Temporary mock data for the demo
-      const mockValuation: ValuationOutput = {
-        fdvRange: {
-          min: 10000000,
-          max: 15000000
-        },
-        initialMarketCapRange: {
-          min: 2000000,
-          max: 3000000
-        },
-        risks: [
-          {
-            type: 'warning',
-            message: 'High unlock at TGE (45% circulating)',
-            suggestion: 'Consider reducing to 25%'
-          },
-          {
-            type: 'warning',
-            message: 'Low DEX liquidity might cause volatility',
-            suggestion: 'Consider increasing initial liquidity'
-          }
-        ]
-      };
-
-      setValuation(mockValuation);
+      const result = await ValuationService.generateValuation(formData);
+      setValuation(result);
       toast.success("Valuation estimate generated!");
     } catch (error) {
       toast.error("Failed to generate valuation");
@@ -123,6 +102,46 @@ export const ValuationForm = () => {
               required
             />
           </div>
+
+          <div className="space-y-2">
+            <Label>Project Category</Label>
+            <Select
+              value={formData.projectCategory}
+              onValueChange={(value: ValuationInput['projectCategory']) => 
+                setFormData(prev => ({ ...prev, projectCategory: value }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="DeFi">DeFi</SelectItem>
+                <SelectItem value="GameFi">GameFi</SelectItem>
+                <SelectItem value="NFT">NFT</SelectItem>
+                <SelectItem value="Infrastructure">Infrastructure</SelectItem>
+                <SelectItem value="DAO">DAO</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Market Condition</Label>
+            <Select
+              value={formData.marketCondition}
+              onValueChange={(value: ValuationInput['marketCondition']) => 
+                setFormData(prev => ({ ...prev, marketCondition: value }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Bull">Bull Market</SelectItem>
+                <SelectItem value="Bear">Bear Market</SelectItem>
+                <SelectItem value="Neutral">Neutral Market</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <Button type="submit" className="w-full" disabled={loading}>
@@ -147,6 +166,22 @@ export const ValuationForm = () => {
                   {formatCurrency(valuation.initialMarketCapRange.min)} - {formatCurrency(valuation.initialMarketCapRange.max)}
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="font-semibold">Comparable Projects</h3>
+            <div className="space-y-2">
+              {valuation.comparables.map((comparable, index) => (
+                <div key={index} className="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+                  <div className="font-medium">{comparable.name}</div>
+                  <div className="text-sm text-zinc-500">
+                    FDV: {formatCurrency(comparable.fdv)} | 
+                    MCap: {formatCurrency(comparable.mcap)} | 
+                    Performance: {comparable.performance}%
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
