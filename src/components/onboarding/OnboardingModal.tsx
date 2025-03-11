@@ -1,6 +1,6 @@
 
-import { useEffect, useState } from 'react';
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useState } from 'react';
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -23,13 +23,6 @@ export const OnboardingModal = () => {
     legalSupport: '',
     aiOptimization: ''
   });
-
-  useEffect(() => {
-    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
-    if (!hasSeenOnboarding) {
-      setOpen(true);
-    }
-  }, []);
 
   const handleAnswerChange = (question: keyof QuestionnaireData, value: string) => {
     setAnswers(prev => ({ ...prev, [question]: value }));
@@ -62,6 +55,7 @@ export const OnboardingModal = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[600px]">
+        <DialogTitle className="sr-only">Onboarding</DialogTitle>
         <div className="space-y-6">
           <div className="relative h-2 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
             <div 
