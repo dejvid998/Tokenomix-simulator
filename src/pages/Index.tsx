@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { TokenDistributionChart } from "@/components/charts/TokenDistributionChart";
 import { TokenUnlockChart } from "@/components/charts/TokenUnlockChart";
 import { TokenomicsForm } from "@/components/forms/TokenomicsForm";
 import { NavBar } from "@/components/layout/NavBar";
-import type { TokenomicsData, TokenAllocation } from '@/types/tokenomics';
+import type { TokenomicsData, TokenAllocation, VestingType } from '@/types/tokenomics';
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
