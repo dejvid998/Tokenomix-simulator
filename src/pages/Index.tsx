@@ -5,7 +5,7 @@ import { TokenUnlockChart } from "@/components/charts/TokenUnlockChart";
 import { TokenomicsForm } from "@/components/forms/TokenomicsForm";
 import { TokenomicsQuestionnaire } from "@/components/forms/tokenomics/TokenomicsQuestionnaire";
 import { NavBar } from "@/components/layout/NavBar";
-import type { TokenomicsData, VestingType } from '@/types/tokenomics';
+import type { TokenomicsData, VestingType, TokenAllocation } from '@/types/tokenomics';
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
