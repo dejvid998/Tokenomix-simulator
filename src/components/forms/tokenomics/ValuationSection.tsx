@@ -2,9 +2,10 @@
 import { Card } from "@/components/ui/card";
 import { ValuationForm } from "./ValuationForm";
 import { Button } from "@/components/ui/button";
-import { BarChart, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import { useState } from "react";
 import type { ValuationOutput } from "@/types/valuation";
+import { ValuationResults } from "./valuation/ValuationResults";
 
 export const ValuationSection = () => {
   const [valuation, setValuation] = useState<ValuationOutput | null>(null);
@@ -34,9 +35,9 @@ export const ValuationSection = () => {
               )}
             </div>
             
-            <ValuationForm 
-              onValuationGenerated={setValuation}
-            />
+            <ValuationForm onValuationGenerated={setValuation} />
+            
+            {valuation && <ValuationResults valuation={valuation} />}
           </div>
         </Card>
       </div>
