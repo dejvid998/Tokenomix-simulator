@@ -2,6 +2,7 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import { AlertTriangle, TrendingUp, List, Shield, Activity } from "lucide-react";
 import type { ValuationOutput, RiskAnalysis } from "@/types/valuation";
 
@@ -61,6 +62,8 @@ export const ValuationResults = ({ valuation }: ValuationResultsProps) => {
         </CardContent>
       </Card>
 
+      <Separator className="my-4" />
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -91,27 +94,34 @@ export const ValuationResults = ({ valuation }: ValuationResultsProps) => {
         </CardContent>
       </Card>
 
-      {groupRisksByCategory(valuation.risks).map((category) => (
+      <Separator className="my-4" />
+
+      {groupRisksByCategory(valuation.risks).map((category, index) => (
         category.risks.length > 0 && (
-          <Card key={category.title}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <category.Icon className="h-5 w-5" />
-                {category.title} Analysis
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {category.risks.map((risk, index) => (
-                <Alert key={index} variant={risk.type === 'error' ? 'destructive' : 'default'}>
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription className="flex flex-col gap-1">
-                    <span className="font-medium">{risk.message}</span>
-                    <span className="text-sm">{risk.suggestion}</span>
-                  </AlertDescription>
-                </Alert>
-              ))}
-            </CardContent>
-          </Card>
+          <React.Fragment key={category.title}>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <category.Icon className="h-5 w-5" />
+                  {category.title} Analysis
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {category.risks.map((risk, riskIndex) => (
+                  <Alert key={riskIndex} variant={risk.type === 'error' ? 'destructive' : 'default'}>
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertDescription className="flex flex-col gap-1">
+                      <span className="font-medium">{risk.message}</span>
+                      <span className="text-sm">{risk.suggestion}</span>
+                    </AlertDescription>
+                  </Alert>
+                ))}
+              </CardContent>
+            </Card>
+            {index < groupRisksByCategory(valuation.risks).filter(c => c.risks.length > 0).length - 1 && (
+              <Separator className="my-4" />
+            )}
+          </React.Fragment>
         )
       ))}
     </div>
