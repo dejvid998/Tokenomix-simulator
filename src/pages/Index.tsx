@@ -1,13 +1,12 @@
-
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { TokenDistributionChart } from "@/components/charts/TokenDistributionChart";
 import { TokenUnlockChart } from "@/components/charts/TokenUnlockChart";
 import { TokenomicsForm } from "@/components/forms/TokenomicsForm";
 import { TokenomicsQuestionnaire } from "@/components/forms/tokenomics/TokenomicsQuestionnaire";
-import { ProjectHeader } from "@/components/layout/ProjectHeader";
 import { NavBar } from "@/components/layout/NavBar";
 import type { TokenomicsData, VestingType } from '@/types/tokenomics';
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const [tokenomicsData, setTokenomicsData] = React.useState<TokenomicsData>({
@@ -56,9 +55,22 @@ const Index = () => {
     <>
       <NavBar />
       <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-zinc-100 to-zinc-200 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900">
-        <div className="container mx-auto px-4 py-12">
-          <ProjectHeader />
-          
+        <div className="container mx-auto px-4 py-16 md:py-24">
+          <div className="text-center space-y-6 mb-16">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+              Optimize & Simulate Your Tokenomics Instantly
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+              Powered by AI – Generate Data-Driven Tokenomics Models
+            </p>
+            <Button 
+              size="lg" 
+              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+            >
+              Try Free Demo
+            </Button>
+          </div>
+
           <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
               <div className="space-y-4">
