@@ -15,6 +15,11 @@ export interface RiskAnalysis {
   category: 'token_allocation' | 'supply_dynamics' | 'market' | 'stress_test';
   message: string;
   suggestion: string;
+  details?: {
+    currentValue: number;
+    threshold: number;
+    metric: string;
+  };
 }
 
 export interface ValuationOutput {

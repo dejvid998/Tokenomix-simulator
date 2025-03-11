@@ -5,13 +5,34 @@ export class ValuationService {
   private static analyzeTokenAllocation(input: ValuationInput): RiskAnalysis[] {
     const risks: RiskAnalysis[] = [];
     
-    // Team allocation risk (using TGE as proxy for now)
-    if (input.tgeCirculatingSupply > 30) {
+    // Team/Insider allocation risk
+    if (input.tgeCirculatingSupply > 40) {
       risks.push({
         type: 'error',
         category: 'token_allocation',
-        message: "High initial token release",
-        suggestion: "Consider reducing TGE unlock percentage to improve price stability"
+        message: "Excessive insider token concentration",
+        suggestion: "Reduce insider allocation to below 40% to minimize centralization risks",
+        details: {
+          currentValue: input.tgeCirculatingSupply,
+          threshold: 40,
+          metric: "Insider Allocation %"
+        }
+      });
+    }
+
+    // Public allocation risk
+    const estimatedPublicAllocation = 100 - input.tgeCirculatingSupply;
+    if (estimatedPublicAllocation < 10) {
+      risks.push({
+        type: 'error',
+        category: 'token_allocation',
+        message: "Insufficient public allocation",
+        suggestion: "Increase public allocation to at least 10% to improve community engagement",
+        details: {
+          currentValue: estimatedPublicAllocation,
+          threshold: 10,
+          metric: "Public Allocation %"
+        }
       });
     }
 
@@ -21,7 +42,12 @@ export class ValuationService {
         type: 'warning',
         category: 'token_allocation',
         message: "High private sale allocation",
-        suggestion: "Consider increasing public allocation for better token distribution"
+        suggestion: "Consider reducing private sale allocation to improve token distribution",
+        details: {
+          currentValue: (input.fundraisingAmount / (input.totalSupply * input.tokenPrice)) * 100,
+          threshold: 40,
+          metric: "Private Sale %"
+        }
       });
     }
 
@@ -31,13 +57,18 @@ export class ValuationService {
   private static analyzeSupplyDynamics(input: ValuationInput): RiskAnalysis[] {
     const risks: RiskAnalysis[] = [];
 
-    // Initial circulating supply risks
-    if (input.tgeCirculatingSupply < 5) {
+    // Circulating supply risks
+    if (input.tgeCirculatingSupply < 50) {
       risks.push({
         type: 'warning',
         category: 'supply_dynamics',
-        message: "Very low initial circulating supply",
-        suggestion: "Consider increasing initial circulation to improve market efficiency"
+        message: "Low circulating supply",
+        suggestion: "Consider increasing circulating supply above 50% to reduce manipulation risks",
+        details: {
+          currentValue: input.tgeCirculatingSupply,
+          threshold: 50,
+          metric: "Circulating Supply %"
+        }
       });
     }
 
@@ -48,7 +79,86 @@ export class ValuationService {
         type: 'error',
         category: 'supply_dynamics',
         message: "Insufficient DEX liquidity ratio",
-        suggestion: "Increase initial liquidity to reduce price impact and volatility"
+        suggestion: "Increase initial liquidity to at least 5% to reduce price impact",
+        details: {
+          currentValue: liquidityRatio,
+          threshold: 5,
+          metric: "Liquidity Ratio %"
+        }
+      });
+    }
+
+    // Market cap to liquidity ratio
+    const mcapToLiquidity = input.dexLiquidity / (input.totalSupply * input.tokenPrice * (input.tgeCirculatingSupply / 100));
+    if (mcapToLiquidity < 0.1) {
+      risks.push({
+        type: 'warning',
+        category: 'supply_dynamics',
+        message: "Low market cap to liquidity ratio",
+        suggestion: "Increase liquidity provision relative to initial market cap",
+        details: {
+          currentValue: mcapToLiquidity * 100,
+          threshold: 10,
+          metric: "MCap/Liquidity %"
+        }
+      });
+    }
+
+    return risks;
+  }
+
+  private static analyzeMarketRisks(input: ValuationInput): RiskAnalysis[] {
+    const risks: RiskAnalysis[] = [];
+
+    // High initial unlock risk
+    if (input.tgeCirculatingSupply > 10) {
+      risks.push({
+        type: 'warning',
+        category: 'market',
+        message: "High TGE unlock percentage",
+        suggestion: "Consider reducing initial unlock to prevent early sell pressure",
+        details: {
+          currentValue: input.tgeCirculatingSupply,
+          threshold: 10,
+          metric: "TGE Unlock %"
+        }
+      });
+    }
+
+    // Market condition risks
+    if (input.marketCondition === 'Bear' && input.tgeCirculatingSupply > 5) {
+      risks.push({
+        type: 'error',
+        category: 'market',
+        message: "High unlock during bear market",
+        suggestion: "Reduce initial circulation during adverse market conditions",
+        details: {
+          currentValue: input.tgeCirculatingSupply,
+          threshold: 5,
+          metric: "Bear Market Unlock %"
+        }
+      });
+    }
+
+    return risks;
+  }
+
+  private static runStressTests(input: ValuationInput): RiskAnalysis[] {
+    const risks: RiskAnalysis[] = [];
+
+    // Liquidity shock simulation
+    const shockImpact = input.dexLiquidity * 0.5;
+    if (shockImpact / (input.totalSupply * input.tokenPrice) < 0.02) {
+      risks.push({
+        type: 'warning',
+        category: 'stress_test',
+        message: "High vulnerability to liquidity shocks",
+        suggestion: "Increase liquidity buffers to handle market stress scenarios",
+        details: {
+          currentValue: (shockImpact / (input.totalSupply * input.tokenPrice)) * 100,
+          threshold: 2,
+          metric: "Shock Resistance %"
+        }
       });
     }
 
@@ -66,7 +176,9 @@ export class ValuationService {
     // Collect all risks from different analyzers
     const allRisks = [
       ...this.analyzeTokenAllocation(input),
-      ...this.analyzeSupplyDynamics(input)
+      ...this.analyzeSupplyDynamics(input),
+      ...this.analyzeMarketRisks(input),
+      ...this.runStressTests(input)
     ];
 
     return {
