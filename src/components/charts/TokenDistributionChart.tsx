@@ -12,14 +12,16 @@ interface Props {
 }
 
 const COLORS = [
+  '#8B5CF6', // Vivid Purple
+  '#D946EF', // Magenta Pink
+  '#F97316', // Bright Orange
+  '#0EA5E9', // Ocean Blue
   '#10B981', // Emerald
-  '#3B82F6', // Blue
-  '#6366F1', // Indigo
-  '#8B5CF6', // Violet
-  '#EC4899', // Pink
   '#F59E0B', // Amber
-  '#10B981', // Emerald
+  '#EC4899', // Pink
+  '#6366F1', // Indigo
   '#14B8A6', // Teal
+  '#3B82F6', // Blue
 ];
 
 const CustomTooltip = ({ active, payload }: any) => {
