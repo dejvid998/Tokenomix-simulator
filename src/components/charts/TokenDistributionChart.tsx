@@ -2,11 +2,7 @@
 import React from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { TEMPLATES } from '../forms/tokenomics/tokenomics-templates';
 import type { TokenAllocation } from '@/types/tokenomics';
-import { toast } from "sonner";
-import { Separator } from "@/components/ui/separator";
 
 interface Props {
   data: TokenAllocation[];
@@ -45,57 +41,9 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-export const TokenDistributionChart: React.FC<Props> = ({ data, onTemplateSelect }) => {
-  const handleTemplateSelect = (templateKey: string) => {
-    if (!onTemplateSelect) return;
-    
-    try {
-      const template = TEMPLATES[templateKey];
-      if (template) {
-        onTemplateSelect(template.allocations);
-        toast.success(`${templateKey.charAt(0).toUpperCase() + templateKey.slice(1)} template applied`);
-      }
-    } catch (error) {
-      toast.error("Failed to load template");
-    }
-  };
-
+export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
   return (
     <div className="space-y-6">
-      {onTemplateSelect && (
-        <>
-          <div className="flex flex-col gap-3">
-            <h4 className="text-sm font-medium text-zinc-900 dark:text-zinc-200">
-              Templates
-            </h4>
-            <div className="flex gap-2 flex-wrap">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleTemplateSelect('dao')}
-              >
-                MakerDAO-like
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleTemplateSelect('defi')}
-              >
-                DeFi Protocol
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleTemplateSelect('makerdao')}
-              >
-                MakerDAO Original
-              </Button>
-            </div>
-          </div>
-          <Separator className="my-2" />
-        </>
-      )}
-      
       <div className="w-full" style={{ height: '400px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
