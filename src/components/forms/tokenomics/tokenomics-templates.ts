@@ -23,5 +23,16 @@ export const TEMPLATES: Record<string, TokenomicsData> = {
       { category: "Marketing", percentage: 10, vesting: { cliff: 1, duration: 24, type: "linear" as VestingType } }
     ],
     marketCondition: "neutral"
+  },
+  makerdao: {
+    totalSupply: 1000000,
+    allocations: [
+      { category: "Founders & Projects", percentage: 70, vesting: { cliff: 12, duration: 48, type: "linear" as VestingType } },
+      { category: "Team", percentage: 15, vesting: { cliff: 6, duration: 36, type: "linear" as VestingType } },
+      { category: "Seed Round 1", percentage: 4, vesting: { cliff: 3, duration: 24, type: "linear" as VestingType } },
+      { category: "Seed Round 2", percentage: 6, vesting: { cliff: 3, duration: 24, type: "linear" as VestingType } },
+      { category: "Seed Round 3", percentage: 5, vesting: { cliff: 3, duration: 24, type: "linear" as VestingType } }
+    ],
+    marketCondition: "neutral"
   }
 };

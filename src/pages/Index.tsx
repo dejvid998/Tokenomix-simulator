@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { TokenDistributionChart } from "@/components/charts/TokenDistributionChart";
@@ -7,6 +8,7 @@ import { NavBar } from "@/components/layout/NavBar";
 import type { TokenomicsData, TokenAllocation, VestingType } from '@/types/tokenomics';
 import { Button } from "@/components/ui/button";
 import { BarChart } from "lucide-react";
+import { TEMPLATES } from '@/components/forms/tokenomics/tokenomics-templates';
 
 const Index = () => {
   const [tokenomicsData, setTokenomicsData] = React.useState<TokenomicsData>({
@@ -58,6 +60,13 @@ const Index = () => {
     }));
   };
 
+  // Function to load a complete template including total supply
+  const handleFullTemplateSelect = (template: string) => {
+    if (TEMPLATES[template]) {
+      setTokenomicsData(TEMPLATES[template]);
+    }
+  };
+
   return (
     <>
       <NavBar />
@@ -77,6 +86,14 @@ const Index = () => {
               >
                 <BarChart className="mr-2" />
                 Start a New Simulation
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline"
+                className="scale-100 hover:scale-105 transition-all duration-300"
+                onClick={() => handleFullTemplateSelect('makerdao')}
+              >
+                Import MakerDAO Tokenomics
               </Button>
             </div>
           </div>
