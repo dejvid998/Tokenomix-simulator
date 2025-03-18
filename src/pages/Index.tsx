@@ -6,8 +6,6 @@ import { TokenUnlockChart } from "@/components/charts/TokenUnlockChart";
 import { TokenomicsForm } from "@/components/forms/TokenomicsForm";
 import { NavBar } from "@/components/layout/NavBar";
 import type { TokenomicsData, TokenAllocation, VestingType } from '@/types/tokenomics';
-import { Button } from "@/components/ui/button";
-import { BarChart } from "lucide-react";
 import { TEMPLATES } from '@/components/forms/tokenomics/tokenomics-templates';
 
 const Index = () => {
@@ -79,23 +77,6 @@ const Index = () => {
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
               Instant Tokenomics Simulations, Investor-Ready Reports
             </p>
-            <div className="flex justify-center gap-4 flex-wrap">
-              <Button 
-                size="lg"
-                className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 scale-100 hover:scale-105 transition-all duration-300"
-              >
-                <BarChart className="mr-2" />
-                Start a New Simulation
-              </Button>
-              <Button 
-                size="lg"
-                variant="outline"
-                className="scale-100 hover:scale-105 transition-all duration-300"
-                onClick={() => handleFullTemplateSelect('makerdao')}
-              >
-                Import MakerDAO Tokenomics
-              </Button>
-            </div>
           </div>
 
           <div className="space-y-8">
