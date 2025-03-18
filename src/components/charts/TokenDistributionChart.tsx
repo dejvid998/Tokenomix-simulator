@@ -9,16 +9,17 @@ interface Props {
   onTemplateSelect?: (template: TokenAllocation[]) => void;
 }
 
+// Updated colors with better contrast for white background
 const COLORS = [
-  '#8B5CF6', // Vivid Purple
-  '#D946EF', // Magenta Pink
+  '#6366F1', // Indigo
+  '#EC4899', // Pink
   '#F97316', // Bright Orange
   '#0EA5E9', // Ocean Blue
   '#10B981', // Emerald
   '#F59E0B', // Amber
-  '#EC4899', // Pink
-  '#6366F1', // Indigo
+  '#8B5CF6', // Vivid Purple
   '#14B8A6', // Teal
+  '#D946EF', // Magenta Pink
   '#3B82F6', // Blue
 ];
 
@@ -51,38 +52,47 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
               data={data}
               cx="50%"
               cy="50%"
-              labelLine={false}
-              outerRadius={150}
+              labelLine={true}
+              outerRadius={140}
               fill="#8884d8"
               dataKey="percentage"
               nameKey="category"
-              label={({ category, percentage }) => `${category} (${percentage}%)`}
+              label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
               className="hover:opacity-80 transition-opacity duration-200"
             >
               {data.map((entry, index) => (
                 <Cell 
                   key={`cell-${index}`} 
                   fill={COLORS[index % COLORS.length]}
+                  stroke="#ffffff"
+                  strokeWidth={2}
                   className="transition-all duration-300 ease-in-out hover:opacity-80"
                 />
               ))}
             </Pie>
             <Tooltip content={<CustomTooltip />} />
             <Legend 
-              verticalAlign="bottom" 
-              height={60}
+              verticalAlign="bottom"
+              height={80}
               wrapperStyle={{
-                paddingTop: '30px',
+                paddingTop: '20px',
                 bottom: '0px'
               }}
               formatter={(value: string, entry: any) => {
                 const { payload } = entry;
                 return (
-                  <span className="text-sm font-medium">
-                    {value} ({payload.percentage}%)
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-3 h-3 rounded-sm" 
+                      style={{ backgroundColor: entry.color }}
+                    />
+                    <span className="text-sm font-medium">
+                      {value} ({payload.percentage}%)
+                    </span>
+                  </div>
                 );
               }}
+              iconType="circle"
             />
           </PieChart>
         </ResponsiveContainer>
