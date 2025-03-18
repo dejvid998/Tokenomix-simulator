@@ -45,7 +45,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
   return (
     <div className="space-y-2">
-      <div className="w-full" style={{ height: '280px' }}>
+      <div className="w-full" style={{ height: '260px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -53,11 +53,10 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
               cx="50%"
               cy="50%"
               labelLine={false}
-              outerRadius={120}
+              outerRadius={110}
               fill="#8884d8"
               dataKey="percentage"
               nameKey="category"
-              label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
               className="hover:opacity-80 transition-opacity duration-200"
             >
               {data.map((entry, index) => (
@@ -75,25 +74,22 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
               verticalAlign="bottom"
               height={36}
               layout="horizontal"
+              align="center"
               wrapperStyle={{
                 paddingTop: '10px',
-                fontSize: '12px'
+                fontSize: '12px',
+                marginBottom: '-10px'
               }}
               formatter={(value: string, entry: any) => {
                 const { payload } = entry;
                 return (
-                  <div className="flex items-center gap-2">
-                    <div 
-                      className="w-3 h-3 rounded-sm" 
-                      style={{ backgroundColor: entry.color }}
-                    />
-                    <span className="text-xs font-medium">
-                      {value} ({payload.percentage}%)
-                    </span>
-                  </div>
+                  <span className="text-xs font-medium flex items-center gap-1">
+                    <span>{value} ({payload.percentage}%)</span>
+                  </span>
                 );
               }}
               iconType="circle"
+              iconSize={8}
             />
           </PieChart>
         </ResponsiveContainer>
