@@ -22,6 +22,19 @@ const COLORS = [
   '#3B82F6', // Blue
 ];
 
+const COLOR_NAMES = [
+  'Vivid Purple',
+  'Magenta Pink',
+  'Bright Orange',
+  'Ocean Blue',
+  'Emerald',
+  'Amber',
+  'Pink',
+  'Indigo',
+  'Teal',
+  'Blue',
+];
+
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
@@ -44,7 +57,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
   return (
     <div className="space-y-6">
-      <div className="w-full" style={{ height: '330px' }}>
+      <div className="w-full" style={{ height: '300px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -52,7 +65,7 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
               cx="50%"
               cy="50%"
               labelLine={false}
-              outerRadius={150}
+              outerRadius={130}
               fill="#8884d8"
               dataKey="percentage"
               nameKey="category"
@@ -70,17 +83,27 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
             <Tooltip content={<CustomTooltip />} />
             <Legend 
               verticalAlign="bottom" 
-              height={60}
+              height={90}
               wrapperStyle={{
                 paddingTop: '30px',
                 bottom: '0px'
               }}
               formatter={(value: string, entry: any, index: number) => {
                 const { payload } = entry;
+                const colorIndex = index % COLORS.length;
                 return (
-                  <span className="text-sm font-medium">
-                    {value} ({payload.percentage}%)
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: COLORS[colorIndex] }}
+                    />
+                    <span className="text-sm font-medium">
+                      {value} ({payload.percentage}%)
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {COLOR_NAMES[colorIndex]}
+                    </span>
+                  </div>
                 );
               }}
             />
