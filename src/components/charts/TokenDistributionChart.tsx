@@ -44,16 +44,16 @@ const CustomTooltip = ({ active, payload }: any) => {
 
 export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
   return (
-    <div className="space-y-6">
-      <div className="w-full" style={{ height: '330px' }}>
+    <div className="space-y-2">
+      <div className="w-full" style={{ height: '280px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={data}
               cx="50%"
               cy="50%"
-              labelLine={true}
-              outerRadius={140}
+              labelLine={false}
+              outerRadius={120}
               fill="#8884d8"
               dataKey="percentage"
               nameKey="category"
@@ -73,10 +73,11 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
             <Tooltip content={<CustomTooltip />} />
             <Legend 
               verticalAlign="bottom"
-              height={80}
+              height={36}
+              layout="horizontal"
               wrapperStyle={{
-                paddingTop: '20px',
-                bottom: '0px'
+                paddingTop: '10px',
+                fontSize: '12px'
               }}
               formatter={(value: string, entry: any) => {
                 const { payload } = entry;
@@ -86,7 +87,7 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
                       className="w-3 h-3 rounded-sm" 
                       style={{ backgroundColor: entry.color }}
                     />
-                    <span className="text-sm font-medium">
+                    <span className="text-xs font-medium">
                       {value} ({payload.percentage}%)
                     </span>
                   </div>
