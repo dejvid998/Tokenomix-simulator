@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine } from 'recharts';
 import type { TokenAllocation } from '@/types/tokenomics';
@@ -72,6 +73,12 @@ export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
   const categories = data.map(d => d.category);
   const cliffMonths = data.map(allocation => allocation.vesting.cliff)
     .filter(cliff => cliff > 0);
+  
+  // Calculate percentage for each category
+  const percentages = data.reduce((acc, allocation) => {
+    acc[allocation.category] = allocation.percentage;
+    return acc;
+  }, {} as Record<string, number>);
 
   return (
     <div className="space-y-4">
@@ -88,7 +95,7 @@ export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
       <ResponsiveContainer width="100%" height={400}>
         <LineChart
           data={chartData}
-          margin={{ top: 20, right: 30, left: 40, bottom: 35 }}
+          margin={{ top: 20, right: 30, left: 40, bottom: 45 }}
         >
           <CartesianGrid 
             strokeDasharray="3 3" 
@@ -146,16 +153,19 @@ export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
           />
           <Legend 
             verticalAlign="bottom" 
-            height={45}
+            height={60}
             wrapperStyle={{
-              paddingTop: '20px',
+              paddingTop: '30px',
               bottom: '0px'
             }}
-            formatter={(value) => (
-              <span style={{ color: '#555555', fontSize: '12px', fontWeight: 500 }}>
-                {value}
-              </span>
-            )}
+            formatter={(value, entry) => {
+              const percentage = percentages[value] || 0;
+              return (
+                <span style={{ color: '#555555', fontSize: '12px', fontWeight: 500 }}>
+                  {value} ({percentage}%)
+                </span>
+              );
+            }}
           />
           
           {cliffMonths.map((month, index) => (

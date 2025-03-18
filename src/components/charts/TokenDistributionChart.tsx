@@ -44,7 +44,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
   return (
     <div className="space-y-6">
-      <div className="w-full" style={{ height: '360px' }}>
+      <div className="w-full" style={{ height: '330px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -70,14 +70,19 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
             <Tooltip content={<CustomTooltip />} />
             <Legend 
               verticalAlign="bottom" 
-              height={45}
+              height={60}
               wrapperStyle={{
-                paddingTop: '20px',
+                paddingTop: '30px',
                 bottom: '0px'
               }}
-              formatter={(value: string) => (
-                <span className="text-sm font-medium">{value}</span>
-              )}
+              formatter={(value: string, entry: any, index: number) => {
+                const { payload } = entry;
+                return (
+                  <span className="text-sm font-medium">
+                    {value} ({payload.percentage}%)
+                  </span>
+                );
+              }}
             />
           </PieChart>
         </ResponsiveContainer>
