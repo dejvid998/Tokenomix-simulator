@@ -1,5 +1,4 @@
 
-import { Separator } from "@/components/ui/separator";
 import type { TokenomicsData } from '@/types/tokenomics';
 
 interface Props {
@@ -12,7 +11,6 @@ export const TemplateButtons = ({ onTemplateSelect }: Props) => {
       <h4 className="text-sm font-medium text-zinc-900 dark:text-zinc-200">
         Tokenomics Configuration
       </h4>
-      <Separator className="my-2" />
     </div>
   );
 };
