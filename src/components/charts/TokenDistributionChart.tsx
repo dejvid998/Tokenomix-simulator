@@ -42,28 +42,32 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-// Custom label component for pie chart sections
+// Custom label component for pie chart sections - now displaying labels outside slices
 const renderCustomizedLabel = (props: any) => {
   const { cx, cy, midAngle, innerRadius, outerRadius, percent, index, payload } = props;
   const RADIAN = Math.PI / 180;
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.65;
+  // Increase radius to position labels outside the pie
+  const radius = outerRadius * 1.15;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
   
   // Only show label if percentage is large enough to be visible
-  if (percent < 0.05) return null;
+  if (percent < 0.04) return null;
+  
+  // Determine text anchor based on the position of label
+  const textAnchor = x > cx ? 'start' : 'end';
   
   return (
     <text 
       x={x} 
       y={y} 
-      fill="white" 
-      textAnchor="middle" 
+      fill={COLORS[index % COLORS.length]}
+      textAnchor={textAnchor}
       dominantBaseline="central"
       fontWeight="bold"
       fontSize={12}
     >
-      {`${payload.category} ${(percent * 100).toFixed(0)}%`}
+      {`${payload.category} (${(percent * 100).toFixed(0)}%)`}
     </text>
   );
 };
@@ -78,9 +82,9 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
               data={data}
               cx="50%"
               cy="50%"
-              labelLine={false}
+              labelLine={true}
               label={renderCustomizedLabel}
-              outerRadius={130}
+              outerRadius={110} // Reduced radius to make room for external labels
               fill="#8884d8"
               dataKey="percentage"
               nameKey="category"
