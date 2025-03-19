@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
 import { Card } from "@/components/ui/card";
@@ -42,14 +41,20 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-// Custom label component for pie chart sections - displaying labels outside slices
+// Custom label component for pie chart sections - displaying labels repositioned
 const renderCustomizedLabel = (props: any) => {
   const { cx, cy, midAngle, innerRadius, outerRadius, percent, index, payload } = props;
   const RADIAN = Math.PI / 180;
-  // Position labels outside the pie
-  const radius = outerRadius * 1.15;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  
+  // Adjust the radius to position labels at a more central location
+  // between current position and bottom of chart
+  const radius = outerRadius * 1.25; // Increased from 1.15 to push labels further out
+  
+  // Calculate position with adjusted angle to move labels downward
+  // This creates a more central position between current and bottom
+  const adjustedAngle = midAngle * 0.85; // Reduce angle influence to shift toward bottom
+  const x = cx + radius * Math.cos(-adjustedAngle * RADIAN);
+  const y = cy + radius * Math.sin(-adjustedAngle * RADIAN) + 15; // Add offset to push down
   
   // Only show label if percentage is large enough to be visible
   if (percent < 0.04) return null;
@@ -116,9 +121,9 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
               layout="horizontal"
               align="center"
               wrapperStyle={{
-                paddingTop: '20px',
-                fontSize: '12px',
-                bottom: '-10px'
+                paddingTop: "20px",
+                fontSize: "12px",
+                bottom: "-10px"
               }}
               formatter={(value: string, entry: any) => {
                 const { payload } = entry;
