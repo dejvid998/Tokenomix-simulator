@@ -81,7 +81,7 @@ export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
   }, {} as Record<string, number>);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       <div className="flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400">
         <div>
           Total Supply: {formatTokenAmount(totalSupply)} tokens
@@ -95,7 +95,7 @@ export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
       <ResponsiveContainer width="100%" height={400}>
         <LineChart
           data={chartData}
-          margin={{ top: 20, right: 30, left: 40, bottom: 45 }}
+          margin={{ top: 5, right: 20, left: 20, bottom: 45 }}
         >
           <CartesianGrid 
             strokeDasharray="3 3" 
@@ -153,9 +153,10 @@ export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
           />
           <Legend 
             verticalAlign="bottom" 
-            height={60}
+            height={36}
             wrapperStyle={{
-              paddingTop: '30px',
+              paddingTop: '10px',
+              fontSize: '12px',
               bottom: '0px'
             }}
             formatter={(value, entry) => {
