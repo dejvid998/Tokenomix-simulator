@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
 import { Card } from "@/components/ui/card";
@@ -117,13 +118,13 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
             <Tooltip content={<CustomTooltip />} />
             <Legend 
               verticalAlign="bottom"
-              height={40}
+              height={36} // Reduced from 40 to minimize empty space
               layout="horizontal"
               align="center"
               wrapperStyle={{
-                paddingTop: "20px",
+                paddingTop: "10px", // Reduced from 20px
                 fontSize: "12px",
-                bottom: "-10px"
+                bottom: "0px" // Changed from -10px to reduce empty space
               }}
               formatter={(value: string, entry: any) => {
                 const { payload } = entry;

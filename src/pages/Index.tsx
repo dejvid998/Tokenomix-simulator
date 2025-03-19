@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { TokenDistributionChart } from "@/components/charts/TokenDistributionChart";
@@ -82,7 +83,7 @@ const Index = () => {
               <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 tracking-wide uppercase">
                 Token Distribution
               </h3>
-              <Card className="p-4 md:p-6 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl h-[500px]">
+              <Card className="p-4 md:p-6 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl h-[440px]">
                 <div className="hover:scale-[1.02] transition-transform duration-300 h-full">
                   <TokenDistributionChart 
                     data={tokenomicsData.allocations}
