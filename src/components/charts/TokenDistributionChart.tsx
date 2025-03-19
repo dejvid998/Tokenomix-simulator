@@ -89,7 +89,7 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
   }, [data]);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 flex flex-col items-center justify-center h-full">
       <div className="w-full" style={{ height: '300px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>

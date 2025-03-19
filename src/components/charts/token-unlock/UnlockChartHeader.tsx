@@ -8,8 +8,8 @@ interface UnlockChartHeaderProps {
 
 export const UnlockChartHeader: React.FC<UnlockChartHeaderProps> = ({ totalSupply }) => {
   return (
-    <div className="flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400">
-      <div>
+    <div className="flex items-center justify-center text-sm text-zinc-500 dark:text-zinc-400 mb-4">
+      <div className="mr-6">
         Total Supply: {formatTokenAmount(totalSupply)} tokens
       </div>
       <div className="flex gap-2 items-center">
