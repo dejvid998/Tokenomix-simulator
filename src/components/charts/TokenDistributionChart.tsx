@@ -1,15 +1,20 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
 import { Card } from "@/components/ui/card";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { Edit2 } from 'lucide-react';
 import type { TokenAllocation } from '@/types/tokenomics';
 
 interface Props {
   data: TokenAllocation[];
   onTemplateSelect?: (template: TokenAllocation[]) => void;
+  onAllocationChange?: (index: number, newPercentage: number) => void;
 }
 
-// Updated colors with better contrast for white background
+// Enhanced colors with better contrast for white background
 const COLORS = [
   '#6366F1', // Indigo
   '#EC4899', // Pink
@@ -48,11 +53,9 @@ const renderCustomizedLabel = (props: any) => {
   const RADIAN = Math.PI / 180;
   
   // Adjust the radius to position labels at a more central location
-  // between current position and bottom of chart
   const radius = outerRadius * 1.25; // Increased from 1.15 to push labels further out
   
   // Calculate position with adjusted angle to move labels downward
-  // This creates a more central position between current and bottom
   const adjustedAngle = midAngle * 0.85; // Reduce angle influence to shift toward bottom
   const x = cx + radius * Math.cos(-adjustedAngle * RADIAN);
   const y = cy + radius * Math.sin(-adjustedAngle * RADIAN) + 15; // Add offset to push down
@@ -78,7 +81,10 @@ const renderCustomizedLabel = (props: any) => {
   );
 };
 
-export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
+export const TokenDistributionChart: React.FC<Props> = ({ data, onTemplateSelect, onAllocationChange }) => {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [editingValue, setEditingValue] = useState<number>(0);
+  
   // Create a new data array with exact percentage values (not calculated from percent)
   const chartData = React.useMemo(() => {
     return data.map(item => ({
@@ -88,9 +94,25 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
     }));
   }, [data]);
 
+  const handlePieClick = (data: any, index: number) => {
+    setActiveIndex(index);
+    setEditingValue(chartData[index].percentage);
+  };
+
+  const handleSliderChange = (value: number[]) => {
+    setEditingValue(value[0]);
+  };
+
+  const handleSaveAllocation = () => {
+    if (onAllocationChange && activeIndex !== null) {
+      onAllocationChange(activeIndex, editingValue);
+      setActiveIndex(null);
+    }
+  };
+
   return (
-    <div className="space-y-2 flex flex-col items-center justify-center h-full">
-      <div className="w-full" style={{ height: '300px' }}>
+    <div className="space-y-2 flex flex-col items-center justify-center h-full w-full">
+      <div className="w-full relative" style={{ height: '300px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -103,7 +125,26 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
               fill="#8884d8"
               dataKey="percentage"
               nameKey="category"
-              className="hover:opacity-80 transition-opacity duration-200"
+              onClick={handlePieClick}
+              className="hover:opacity-80 transition-opacity duration-200 cursor-pointer"
+              activeIndex={activeIndex !== null ? [activeIndex] : []}
+              activeShape={(props) => {
+                const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
+                return (
+                  <g>
+                    <g>
+                      {renderCustomizedLabel(props)}
+                    </g>
+                    <path 
+                      d={`M ${cx},${cy} L ${cx + outerRadius * Math.cos(-startAngle * Math.PI / 180)},${cy + outerRadius * Math.sin(-startAngle * Math.PI / 180)} A ${outerRadius},${outerRadius} 0 ${endAngle - startAngle > 180 ? 1 : 0},0 ${cx + outerRadius * Math.cos(-endAngle * Math.PI / 180)},${cy + outerRadius * Math.sin(-endAngle * Math.PI / 180)} Z`} 
+                      fill={fill}
+                      stroke="#fff"
+                      strokeWidth={3}
+                      opacity={0.9}
+                    />
+                  </g>
+                );
+              }}
             >
               {chartData.map((entry, index) => (
                 <Cell 
@@ -139,6 +180,46 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
             />
           </PieChart>
         </ResponsiveContainer>
+
+        {activeIndex !== null && (
+          <div className="absolute top-0 right-0 z-10 p-3 bg-white/90 dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg">
+            <div className="flex flex-col space-y-3 w-56">
+              <div className="flex justify-between items-center">
+                <h4 className="font-medium">{chartData[activeIndex]?.category}</h4>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setActiveIndex(null)}
+                  className="h-7 w-7 p-0"
+                >
+                  ✕
+                </Button>
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-xs text-muted-foreground">Allocation Percentage</span>
+                  <span className="text-xs font-medium">{editingValue}%</span>
+                </div>
+                <Slider
+                  value={[editingValue]}
+                  min={0}
+                  max={100}
+                  step={1}
+                  onValueChange={handleSliderChange}
+                />
+              </div>
+              <div className="flex justify-end">
+                <Button 
+                  size="sm" 
+                  onClick={handleSaveAllocation}
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                >
+                  Save
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

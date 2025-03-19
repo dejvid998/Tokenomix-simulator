@@ -9,6 +9,7 @@ import { TotalSupplyInput } from './tokenomics/TotalSupplyInput';
 import { MarketConditionSelect } from './tokenomics/MarketConditionSelect';
 import { ActionButtons } from './tokenomics/ActionButtons';
 import { useTokenomicsForm } from '@/hooks/useTokenomicsForm';
+import { TokenDistributionChart } from '@/components/charts/TokenDistributionChart';
 
 interface Props {
   data: TokenomicsData;
@@ -27,9 +28,20 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
     handleExportXLSX,
   } = useTokenomicsForm(data, onChange);
 
+  const handleChartAllocationChange = (index: number, newPercentage: number) => {
+    handleAllocationChange(index, newPercentage);
+  };
+
   return (
     <div className="space-y-6">
       <TemplateButtons onTemplateSelect={onChange} />
+
+      <div className="bg-gray-50 dark:bg-zinc-800/50 p-6 rounded-xl mb-6">
+        <TokenDistributionChart 
+          data={data.allocations}
+          onAllocationChange={handleChartAllocationChange}
+        />
+      </div>
 
       <TotalSupplyInput 
         value={data.totalSupply}

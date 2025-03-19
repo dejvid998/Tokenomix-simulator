@@ -1,6 +1,6 @@
+
 import React from 'react';
 import { Card } from "@/components/ui/card";
-import { TokenDistributionChart } from "@/components/charts/TokenDistributionChart";
 import { TokenUnlockChart } from "@/components/charts/TokenUnlockChart";
 import { TokenomicsForm } from "@/components/forms/TokenomicsForm";
 import { NavBar } from "@/components/layout/NavBar";
@@ -50,17 +50,8 @@ const Index = () => {
     marketCondition: "neutral"
   });
 
-  const handleTemplateSelect = (newAllocations: TokenAllocation[]) => {
-    setTokenomicsData(prev => ({
-      ...prev,
-      allocations: newAllocations
-    }));
-  };
-
-  const handleFullTemplateSelect = (template: string) => {
-    if (TEMPLATES[template]) {
-      setTokenomicsData(TEMPLATES[template]);
-    }
+  const handleFullTemplateSelect = (template: TokenomicsData) => {
+    setTokenomicsData(template);
   };
 
   return (
@@ -78,19 +69,6 @@ const Index = () => {
           </div>
 
           <div className="space-y-8">
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 tracking-wide uppercase text-center">
-                Token Distribution
-              </h3>
-              <Card className="p-4 md:p-6 backdrop-blur-xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl h-[440px] flex items-center justify-center">
-                <div className="hover:scale-[1.02] transition-transform duration-300 h-full w-full flex items-center justify-center">
-                  <TokenDistributionChart 
-                    data={tokenomicsData.allocations}
-                  />
-                </div>
-              </Card>
-            </div>
-
             <div className="space-y-4">
               <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 tracking-wide uppercase text-center">
                 Token Unlock Schedule
