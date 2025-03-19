@@ -42,11 +42,11 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-// Custom label component for pie chart sections - now displaying labels outside slices
+// Custom label component for pie chart sections - displaying labels outside slices
 const renderCustomizedLabel = (props: any) => {
   const { cx, cy, midAngle, innerRadius, outerRadius, percent, index, payload } = props;
   const RADIAN = Math.PI / 180;
-  // Increase radius to position labels outside the pie
+  // Position labels outside the pie
   const radius = outerRadius * 1.15;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -67,19 +67,28 @@ const renderCustomizedLabel = (props: any) => {
       fontWeight="bold"
       fontSize={12}
     >
-      {`${payload.category} (${(percent * 100).toFixed(0)}%)`}
+      {`${payload.category} (${payload.percentage}%)`}
     </text>
   );
 };
 
 export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
+  // Create a new data array with exact percentage values (not calculated from percent)
+  const chartData = React.useMemo(() => {
+    return data.map(item => ({
+      ...item,
+      // Ensure percentage is a whole number for display
+      percentage: Math.round(item.percentage)
+    }));
+  }, [data]);
+
   return (
     <div className="space-y-2">
       <div className="w-full" style={{ height: '300px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
-              data={data}
+              data={chartData}
               cx="50%"
               cy="50%"
               labelLine={true}
@@ -90,7 +99,7 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
               nameKey="category"
               className="hover:opacity-80 transition-opacity duration-200"
             >
-              {data.map((entry, index) => (
+              {chartData.map((entry, index) => (
                 <Cell 
                   key={`cell-${index}`} 
                   fill={COLORS[index % COLORS.length]}
