@@ -42,10 +42,36 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
+// Custom label component for pie chart sections
+const renderCustomizedLabel = (props: any) => {
+  const { cx, cy, midAngle, innerRadius, outerRadius, percent, index, payload } = props;
+  const RADIAN = Math.PI / 180;
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.65;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  
+  // Only show label if percentage is large enough to be visible
+  if (percent < 0.05) return null;
+  
+  return (
+    <text 
+      x={x} 
+      y={y} 
+      fill="white" 
+      textAnchor="middle" 
+      dominantBaseline="central"
+      fontWeight="bold"
+      fontSize={12}
+    >
+      {`${payload.category} ${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
+
 export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
   return (
     <div className="space-y-2">
-      <div className="w-full" style={{ height: '260px' }}>
+      <div className="w-full" style={{ height: '300px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -53,7 +79,8 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
               cx="50%"
               cy="50%"
               labelLine={false}
-              outerRadius={110}
+              label={renderCustomizedLabel}
+              outerRadius={130}
               fill="#8884d8"
               dataKey="percentage"
               nameKey="category"
@@ -72,24 +99,24 @@ export const TokenDistributionChart: React.FC<Props> = ({ data }) => {
             <Tooltip content={<CustomTooltip />} />
             <Legend 
               verticalAlign="bottom"
-              height={36}
+              height={40}
               layout="horizontal"
               align="center"
               wrapperStyle={{
-                paddingTop: '10px',
+                paddingTop: '20px',
                 fontSize: '12px',
-                marginBottom: '-10px'
+                bottom: '-10px'
               }}
               formatter={(value: string, entry: any) => {
                 const { payload } = entry;
                 return (
-                  <span className="text-xs font-medium flex items-center gap-1">
-                    <span>{value} ({payload.percentage}%)</span>
+                  <span className="text-xs font-medium">
+                    {value} ({payload.percentage}%)
                   </span>
                 );
               }}
               iconType="circle"
-              iconSize={8}
+              iconSize={10}
             />
           </PieChart>
         </ResponsiveContainer>
