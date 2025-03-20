@@ -28,7 +28,7 @@ export const UnlockChartConfig: React.FC<UnlockChartConfigProps> = ({
     <ResponsiveContainer width="100%" height={400}>
       <LineChart
         data={chartData}
-        margin={{ top: 5, right: 20, left: 20, bottom: 45 }}
+        margin={{ top: 5, right: 20, left: 20, bottom: 55 }} // Increased bottom margin
       >
         <CartesianGrid 
           strokeDasharray="3 3" 
@@ -40,7 +40,7 @@ export const UnlockChartConfig: React.FC<UnlockChartConfigProps> = ({
           label={{ 
             value: 'Months After TGE', 
             position: 'insideBottom', 
-            offset: -10,
+            offset: -20, // Increased offset for better spacing
             fill: '#555555',
             fontSize: 12,
             fontWeight: 500
@@ -86,16 +86,17 @@ export const UnlockChartConfig: React.FC<UnlockChartConfigProps> = ({
         />
         <Legend 
           verticalAlign="bottom" 
-          height={36}
+          height={46} // Increased height
           wrapperStyle={{
-            paddingTop: '10px',
-            fontSize: '12px',
-            bottom: '0px'
+            paddingTop: "20px", // Increased padding
+            fontSize: "12px",
+            bottom: "0px",
+            lineHeight: "24px" // Added line height for better spacing
           }}
           formatter={(value, entry) => {
             const percentage = percentages[value] || 0;
             return (
-              <span style={{ color: '#555555', fontSize: '12px', fontWeight: 500 }}>
+              <span style={{ color: '#555555', fontSize: '12px', fontWeight: 500, padding: '0 4px' }}>
                 {value} ({percentage}%)
               </span>
             );
@@ -104,8 +105,8 @@ export const UnlockChartConfig: React.FC<UnlockChartConfigProps> = ({
         
         {/* Market Reference Line */}
         <ReferenceLine
-          y={totalSupply * 0.6} // Adjust this value to position the market line appropriately
-          stroke="#8B5CF6" // Purple color for market
+          y={totalSupply * 0.6} 
+          stroke="#8B5CF6" 
           strokeWidth={2}
           strokeDasharray="5 5"
           label={{
@@ -114,7 +115,7 @@ export const UnlockChartConfig: React.FC<UnlockChartConfigProps> = ({
             fill: '#8B5CF6',
             fontSize: 12,
             fontWeight: 600,
-            dy: 15 // Move label down to avoid overlap with legend
+            dy: 25 // Increased value to position further down
           }}
         />
         

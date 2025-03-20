@@ -47,18 +47,17 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-// Custom label component for pie chart sections - displaying labels repositioned
+// External label component for pie chart - positioned around the chart
 const renderCustomizedLabel = (props: any) => {
-  const { cx, cy, midAngle, innerRadius, outerRadius, percent, index, payload } = props;
+  const { cx, cy, midAngle, outerRadius, percent, index, payload } = props;
   const RADIAN = Math.PI / 180;
   
-  // Adjust the radius to position labels at a more central location
-  const radius = outerRadius * 1.25; // Increased from 1.15 to push labels further out
+  // Increase radius to position labels further from pie
+  const radius = outerRadius * 1.4;
   
-  // Calculate position with adjusted angle to move labels downward
-  const adjustedAngle = midAngle * 0.85; // Reduce angle influence to shift toward bottom
-  const x = cx + radius * Math.cos(-adjustedAngle * RADIAN);
-  const y = cy + radius * Math.sin(-adjustedAngle * RADIAN) + 15; // Add offset to push down
+  // Calculate position with angle
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
   
   // Only show label if percentage is large enough to be visible
   if (percent < 0.04) return null;
@@ -111,8 +110,8 @@ export const TokenDistributionChart: React.FC<Props> = ({ data, onTemplateSelect
   };
 
   return (
-    <div className="space-y-2 flex flex-col items-center justify-center h-full w-full">
-      <div className="w-full relative" style={{ height: '300px' }}>
+    <div className="space-y-6 flex flex-col items-center justify-center h-full w-full">
+      <div className="w-full relative" style={{ height: '320px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -121,7 +120,9 @@ export const TokenDistributionChart: React.FC<Props> = ({ data, onTemplateSelect
               cy="50%"
               labelLine={true}
               label={renderCustomizedLabel}
-              outerRadius={110} // Reduced radius to make room for external labels
+              outerRadius={100} 
+              innerRadius={0}
+              paddingAngle={1}
               fill="#8884d8"
               dataKey="percentage"
               nameKey="category"
@@ -157,27 +158,6 @@ export const TokenDistributionChart: React.FC<Props> = ({ data, onTemplateSelect
               ))}
             </Pie>
             <Tooltip content={<CustomTooltip />} />
-            <Legend 
-              verticalAlign="bottom"
-              height={36} // Reduced from 40 to minimize empty space
-              layout="horizontal"
-              align="center"
-              wrapperStyle={{
-                paddingTop: "10px", // Reduced from 20px
-                fontSize: "12px",
-                bottom: "0px" // Changed from -10px to reduce empty space
-              }}
-              formatter={(value: string, entry: any) => {
-                const { payload } = entry;
-                return (
-                  <span className="text-xs font-medium">
-                    {value} ({payload.percentage}%)
-                  </span>
-                );
-              }}
-              iconType="circle"
-              iconSize={10}
-            />
           </PieChart>
         </ResponsiveContainer>
 
@@ -220,6 +200,27 @@ export const TokenDistributionChart: React.FC<Props> = ({ data, onTemplateSelect
             </div>
           </div>
         )}
+      </div>
+
+      {/* Separate legend with more space */}
+      <div className="w-full px-4 mt-8">
+        <div className="flex flex-wrap justify-center items-center gap-4">
+          {chartData.map((entry, index) => (
+            <div 
+              key={`legend-${index}`} 
+              className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              onClick={() => handlePieClick(entry, index)}
+            >
+              <div 
+                className="w-3 h-3 rounded-full" 
+                style={{ backgroundColor: COLORS[index % COLORS.length] }}
+              />
+              <span className="text-xs font-medium">
+                {entry.category} ({entry.percentage}%)
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
