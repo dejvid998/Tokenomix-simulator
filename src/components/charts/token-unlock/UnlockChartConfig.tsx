@@ -102,6 +102,22 @@ export const UnlockChartConfig: React.FC<UnlockChartConfigProps> = ({
           }}
         />
         
+        {/* Market Reference Line */}
+        <ReferenceLine
+          y={totalSupply * 0.6} // Adjust this value to position the market line appropriately
+          stroke="#8B5CF6" // Purple color for market
+          strokeWidth={2}
+          strokeDasharray="5 5"
+          label={{
+            value: 'Market',
+            position: 'right',
+            fill: '#8B5CF6',
+            fontSize: 12,
+            fontWeight: 600,
+            dy: 15 // Move label down to avoid overlap with legend
+          }}
+        />
+        
         {cliffMonths.map((month, index) => (
           <ReferenceLine
             key={`cliff-${month}-${index}`}
