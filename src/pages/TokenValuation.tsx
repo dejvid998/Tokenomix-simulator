@@ -1,8 +1,8 @@
 
-import { TokenomicsQuestionnaire } from "@/components/forms/tokenomics/TokenomicsQuestionnaire";
+import { ValuationSection } from "@/components/forms/tokenomics/ValuationSection";
 import { NavBar } from "@/components/layout/NavBar";
 
-const Toolkit = () => {
+const TokenValuation = () => {
   return (
     <>
       <NavBar />
@@ -10,15 +10,15 @@ const Toolkit = () => {
         <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="text-center space-y-6 mb-16">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-              Web3 Launch Toolkit
+              Token Valuation
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-              Configure your token launch parameters and get personalized recommendations
+              Get AI-powered valuation estimates for your token
             </p>
           </div>
           
           <div className="max-w-4xl mx-auto">
-            <TokenomicsQuestionnaire />
+            <ValuationSection />
           </div>
         </div>
       </div>
@@ -26,4 +26,4 @@ const Toolkit = () => {
   );
 };
 
-export default Toolkit;
+export default TokenValuation;

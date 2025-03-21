@@ -1,5 +1,6 @@
+
 import { Link } from "react-router-dom";
-import { Home, FileText, Settings, Wrench } from "lucide-react";
+import { Home, FileText, Settings, Wrench, TrendingUp } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +23,12 @@ const navItems: NavItem[] = [
     href: "/toolkit",
     icon: Wrench,
     tooltip: "Launch Your Web3 Project"
+  },
+  {
+    title: "Token Valuation",
+    href: "/token-valuation",
+    icon: TrendingUp,
+    tooltip: "AI-Powered Token Valuation"
   },
   {
     title: "Reports",
