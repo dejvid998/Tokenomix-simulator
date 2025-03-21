@@ -23,7 +23,7 @@ export const TokenUnlockChart: React.FC<Props> = ({ data, totalSupply }) => {
   }, {} as Record<string, number>);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" id="token-unlock-chart">
       <UnlockChartHeader totalSupply={totalSupply} />
       <UnlockChartConfig 
         chartData={chartData}

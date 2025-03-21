@@ -46,7 +46,7 @@ export const TokenDistributionChart: React.FC<Props> = ({ data, onTemplateSelect
   };
 
   return (
-    <div className="space-y-6 flex flex-col items-center justify-center h-full w-full">
+    <div className="space-y-6 flex flex-col items-center justify-center h-full w-full" id="token-distribution-chart">
       <div className="w-full relative" style={{ height: '320px' }}>
         <PieChartComponent 
           chartData={chartData}

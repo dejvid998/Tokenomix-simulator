@@ -1,7 +1,7 @@
-
 import { TokenomicsData, TokenAllocation } from '@/types/tokenomics';
 import { toast } from "sonner";
 import * as XLSX from 'xlsx';
+import { prepareChartsForExport } from '@/utils/chartExport';
 
 export const useTokenomicsForm = (data: TokenomicsData, onChange: (data: TokenomicsData) => void) => {
   const handleTotalSupplyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,8 +100,12 @@ export const useTokenomicsForm = (data: TokenomicsData, onChange: (data: Tokenom
     }
   };
 
-  const handleExportXLSX = () => {
+  const handleExportXLSX = async () => {
     try {
+      toast.info("Preparing export...");
+      
+      const charts = await prepareChartsForExport();
+      
       const wsData = [
         ['Category', 'Percentage', 'Cliff (months)', 'Vesting Duration (months)', 'Vesting Type', 'Token Amount'],
         ...data.allocations.map(a => [
@@ -132,11 +136,57 @@ export const useTokenomicsForm = (data: TokenomicsData, onChange: (data: Tokenom
       }
 
       XLSX.utils.book_append_sheet(wb, ws, 'Tokenomics');
+      
+      if (charts.unlockChart) {
+        const unlockWs = XLSX.utils.aoa_to_sheet([
+          ['Token Unlock Schedule'],
+          [''],
+        ]);
+        
+        const imageId = wb.SheetNames.length + 1;
+        unlockWs['!images'] = [
+          {
+            name: 'token-unlock-chart.png',
+            data: charts.unlockChart.split(',')[1],
+            position: {
+              type: 'twoCellAnchor',
+              from: { col: 0, row: 2 },
+              to: { col: 8, row: 20 }
+            }
+          }
+        ];
+        
+        XLSX.utils.book_append_sheet(wb, unlockWs, 'Unlock Chart');
+      }
+
+      if (charts.distributionChart) {
+        const distributionWs = XLSX.utils.aoa_to_sheet([
+          ['Token Distribution'],
+          [''],
+        ]);
+        
+        const imageId = wb.SheetNames.length + 1;
+        distributionWs['!images'] = [
+          {
+            name: 'token-distribution-chart.png',
+            data: charts.distributionChart.split(',')[1],
+            position: {
+              type: 'twoCellAnchor',
+              from: { col: 0, row: 2 },
+              to: { col: 8, row: 20 }
+            }
+          }
+        ];
+        
+        XLSX.utils.book_append_sheet(wb, distributionWs, 'Distribution Chart');
+      }
+
       XLSX.writeFile(wb, 'tokenomics-report.xlsx');
       
-      toast.success("XLSX report downloaded successfully!");
+      toast.success("XLSX report with charts downloaded successfully!");
     } catch (error) {
-      toast.error("Failed to export XLSX");
+      console.error("Export error:", error);
+      toast.error("Failed to export XLSX. Please try again.");
     }
   };
 
