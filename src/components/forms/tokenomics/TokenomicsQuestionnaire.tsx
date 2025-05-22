@@ -5,13 +5,11 @@ import { Card } from "@/components/ui/card";
 import { Download, Send } from 'lucide-react';
 import { toast } from "sonner";
 import { QuestionItem } from './QuestionItem';
-import { EmailPreview } from './EmailPreview';
+// Removed EmailPreview import
 import { exportToDocx } from '@/utils/documentExport';
 import type { QuestionnaireData } from '@/types/questionnaire';
 import { questions } from '@/types/questionnaire';
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+// Removed Input, Checkbox, Label imports as they are no longer directly used here
 
 export const TokenomicsQuestionnaire = () => {
   const [answers, setAnswers] = useState<QuestionnaireData>({
@@ -26,10 +24,8 @@ export const TokenomicsQuestionnaire = () => {
     legalSupport: '',
     aiOptimization: ''
   });
-  const [userEmail, setUserEmail] = useState('');
-  const [emailjsKey, setEmailjsKey] = useState('');
+  // Removed userEmail, emailjsKey, and copyMe states
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [copyMe, setCopyMe] = useState(false);
 
   const handleAnswerChange = (question: keyof QuestionnaireData, value: string) => {
     setAnswers(prev => ({ ...prev, [question]: value }));
@@ -37,6 +33,12 @@ export const TokenomicsQuestionnaire = () => {
 
   const handleExportDOCX = async () => {
     try {
+      // Validate that all questions are answered before exporting
+      const unansweredQuestions = Object.entries(answers).filter(([_, value]) => !value);
+      if (unansweredQuestions.length > 0) {
+        toast.error("Please answer all questions before exporting.");
+        return;
+      }
       await exportToDocx(questions, answers);
       toast.success("DOCX exported successfully!");
     } catch (error) {
@@ -45,11 +47,6 @@ export const TokenomicsQuestionnaire = () => {
   };
 
   const handleSubmit = async () => {
-    if (!emailjsKey) {
-      toast.error("Please enter your EmailJS API key");
-      return;
-    }
-
     // Validate that all questions are answered
     const unansweredQuestions = Object.entries(answers).filter(([_, value]) => !value);
     if (unansweredQuestions.length > 0) {
@@ -59,45 +56,21 @@ export const TokenomicsQuestionnaire = () => {
 
     setIsSubmitting(true);
     
+    // Simulating a submission process as email sending is removed
+    // In a real scenario, this might save to local storage or a backend if one exists
+    // For now, it just confirms answers are complete.
     try {
-      // Replace the placeholder in the service with the provided key
-      const scriptElement = document.createElement('script');
-      scriptElement.type = 'text/javascript';
-      scriptElement.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
-      document.body.appendChild(scriptElement);
+      // Simulate a short delay for "processing"
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      scriptElement.onload = async () => {
-        // @ts-ignore - emailjs is loaded from CDN
-        window.emailjs.init(emailjsKey);
-        
-        // Prepare template parameters
-        const templateParams = {
-          to_email: 'dejvid814@gmail.com',
-          from_email: copyMe && userEmail ? userEmail : 'noreply@unlockfi.com',
-          subject: 'New Web3 Launch Questionnaire Submission',
-          message: JSON.stringify(answers, null, 2),
-          user_email: userEmail || 'Not provided'
-        };
-        
-        // @ts-ignore - emailjs is loaded from CDN
-        await window.emailjs.send('default_service', 'template_default', templateParams);
-        
-        toast.success("Answers submitted successfully!");
-        
-        if (copyMe && userEmail) {
-          toast.info("A copy has been sent to your email");
-        }
-        
-        setIsSubmitting(false);
-      };
+      toast.success("Answers validated. You can now export your document.");
       
-      scriptElement.onerror = () => {
-        toast.error("Failed to load EmailJS. Please try again.");
-        setIsSubmitting(false);
-      };
     } catch (error) {
-      console.error('Error sending email:', error);
-      toast.error("Failed to send answers");
+      // This catch block might not be strictly necessary anymore without network calls
+      // but kept for consistency if any other async operations were added.
+      console.error('Error during submission:', error);
+      toast.error("An error occurred during submission.");
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -115,58 +88,15 @@ export const TokenomicsQuestionnaire = () => {
         ))}
       </div>
       
-      <div className="border-t pt-4 space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="user-email">Your Email (optional)</Label>
-          <Input 
-            id="user-email"
-            type="email" 
-            placeholder="your@email.com" 
-            value={userEmail}
-            onChange={(e) => setUserEmail(e.target.value)}
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="emailjs-key">
-            EmailJS API Key (required to send emails)
-          </Label>
-          <Input 
-            id="emailjs-key"
-            type="text" 
-            placeholder="Your EmailJS public key" 
-            value={emailjsKey}
-            onChange={(e) => setEmailjsKey(e.target.value)}
-          />
-          <p className="text-xs text-muted-foreground">
-            Create a free account at emailjs.com, set up a service and template, and enter your public key here.
-          </p>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <Checkbox 
-            id="copy-me" 
-            checked={copyMe}
-            onCheckedChange={(checked) => setCopyMe(checked as boolean)}
-            disabled={!userEmail}
-          />
-          <Label htmlFor="copy-me" className="text-sm cursor-pointer">
-            Send me a copy of my answers
-          </Label>
-        </div>
-        
-        <div className="flex justify-end">
-          <EmailPreview answers={answers} userEmail={userEmail} />
-        </div>
-      </div>
+      {/* Removed the entire border-t div containing email, emailjs key, copy me checkbox, and email preview */}
       
-      <div className="flex gap-2 pt-4">
+      <div className="flex gap-2 pt-4 border-t mt-6"> {/* Added border-t here and mt-6 for spacing */}
         <Button 
           variant="outline"
           onClick={handleExportDOCX}
           className="w-full"
         >
-          <Download className="mr-2" />
+          <Download className="mr-2 h-4 w-4" /> {/* Ensured icon size consistency */}
           Export DOCX
         </Button>
         
@@ -175,10 +105,11 @@ export const TokenomicsQuestionnaire = () => {
           className="w-full bg-gradient-to-r from-purple-500 to-blue-500"
           disabled={isSubmitting}
         >
-          <Send className="mr-2" />
-          {isSubmitting ? 'Sending...' : 'Submit Answers'}
+          <Send className="mr-2 h-4 w-4" /> {/* Ensured icon size consistency */}
+          {isSubmitting ? 'Processing...' : 'Submit Answers'}
         </Button>
       </div>
     </Card>
   );
 };
+
