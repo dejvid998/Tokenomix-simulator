@@ -86,6 +86,8 @@ export const TokenomicsForm: React.FC<Props> = ({ data, onChange }) => {
       <ActionButtons
         onSave={handleSaveConfiguration}
         onExport={handleExportXLSX}
+        tokenomicsData={data}
+        projectName="Your Token Project"
       />
     </div>
   );

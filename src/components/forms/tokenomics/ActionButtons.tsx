@@ -1,28 +1,51 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Download, Save } from 'lucide-react';
+import { Save, FileSpreadsheet } from 'lucide-react';
+import { ExportDeckButton } from './ExportDeckButton';
+import type { TokenomicsData } from '@/types/tokenomics';
 
-interface Props {
+interface ActionButtonsProps {
   onSave: () => void;
   onExport: () => void;
+  tokenomicsData?: TokenomicsData;
+  projectName?: string;
 }
 
-export const ActionButtons: React.FC<Props> = ({ onSave, onExport }) => {
+export const ActionButtons: React.FC<ActionButtonsProps> = ({ 
+  onSave, 
+  onExport, 
+  tokenomicsData,
+  projectName 
+}) => {
   return (
-    <div className="flex gap-4">
-      <Button className="flex-1" onClick={onSave}>
-        <Save className="mr-2" />
-        Save Configuration
-      </Button>
-      <Button 
-        variant="outline"
-        onClick={onExport}
-        className="flex-1"
-      >
-        <Download className="mr-2" />
-        Export XLSX
-      </Button>
+    <div className="space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <Button
+          variant="outline"
+          onClick={onSave}
+          className="w-full"
+        >
+          <Save className="mr-2 h-4 w-4" />
+          Save Configuration
+        </Button>
+        
+        <Button
+          variant="outline"
+          onClick={onExport}
+          className="w-full"
+        >
+          <FileSpreadsheet className="mr-2 h-4 w-4" />
+          Export XLSX
+        </Button>
+      </div>
+      
+      {tokenomicsData && (
+        <ExportDeckButton 
+          tokenomicsData={tokenomicsData}
+          projectName={projectName}
+        />
+      )}
     </div>
   );
 };
