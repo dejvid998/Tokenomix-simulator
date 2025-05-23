@@ -81,7 +81,7 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       italic: true
     });
 
-    // Slide 2: Main Overview - Exact Layout Match
+    // Slide 2: Main Overview - High Quality Charts
     const overviewSlide = pptx.addSlide();
     overviewSlide.background = { fill: 'FFFFFF' };
     
@@ -97,22 +97,32 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       color: '1E293B'
     });
 
-    // Distribution chart (left side) - larger to match original
+    // Distribution chart (left side) - High resolution
     overviewSlide.addImage({
       data: distributionChart,
       x: 0.3,
       y: 1.0,
       w: 4.8,
-      h: 4.2
+      h: 4.2,
+      sizing: {
+        type: 'contain',
+        w: 4.8,
+        h: 4.2
+      }
     });
 
-    // Unlock chart (right side) - larger to match original
+    // Unlock chart (right side) - High resolution
     overviewSlide.addImage({
       data: unlockChart,
       x: 5.4,
       y: 1.0,
       w: 4.3,
-      h: 4.2
+      h: 4.2,
+      sizing: {
+        type: 'contain',
+        w: 4.3,
+        h: 4.2
+      }
     });
 
     // Chart labels below charts
@@ -164,13 +174,18 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       color: '1E293B'
     });
 
-    // Large distribution chart
+    // Large distribution chart - Full page, high quality
     distributionSlide.addImage({
       data: distributionChart,
       x: 0.5,
       y: 1.2,
-      w: 6,
-      h: 3.5
+      w: 9,
+      h: 3.5,
+      sizing: {
+        type: 'contain',
+        w: 9,
+        h: 3.5
+      }
     });
 
     // Detailed allocation breakdown
@@ -212,13 +227,18 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       color: '1E293B'
     });
 
-    // Large unlock chart
+    // Large unlock chart - Full page, high quality
     vestingSlide.addImage({
       data: unlockChart,
       x: 0.3,
       y: 1.2,
       w: 9.4,
-      h: 3.5
+      h: 3.5,
+      sizing: {
+        type: 'contain',
+        w: 9.4,
+        h: 3.5
+      }
     });
 
     // Vesting schedule details
@@ -284,17 +304,44 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       ? data.tokenomicsData.allocations.reduce((sum, a) => sum + a.vesting.duration, 0) / data.tokenomicsData.allocations.length
       : 0;
 
-    // Create metrics table
-    const metricsData = [
-      ['Metric', 'Value'],
-      ['Total Supply', `${data.tokenomicsData.totalSupply.toLocaleString()} tokens`],
-      ['Total Allocation', `${totalAllocation}%`],
-      ['Team Allocation', `${teamAllocation}%`],
-      ['Public Allocation', `${publicAllocation}%`],
-      ['Market Condition', data.tokenomicsData.marketCondition],
-      ['Average Cliff Period', `${averageCliff.toFixed(1)} months`],
-      ['Average Vesting Period', `${averageVesting.toFixed(1)} months`],
-      ['Number of Allocations', data.tokenomicsData.allocations.length.toString()]
+    // Create metrics table with proper typing
+    const metricsData: any[][] = [
+      [
+        { text: 'Metric', options: { bold: true, fontSize: 14, color: '1E293B' } },
+        { text: 'Value', options: { bold: true, fontSize: 14, color: '1E293B' } }
+      ],
+      [
+        { text: 'Total Supply', options: { fontSize: 12 } },
+        { text: `${data.tokenomicsData.totalSupply.toLocaleString()} tokens`, options: { fontSize: 12 } }
+      ],
+      [
+        { text: 'Total Allocation', options: { fontSize: 12 } },
+        { text: `${totalAllocation}%`, options: { fontSize: 12 } }
+      ],
+      [
+        { text: 'Team Allocation', options: { fontSize: 12 } },
+        { text: `${teamAllocation}%`, options: { fontSize: 12 } }
+      ],
+      [
+        { text: 'Public Allocation', options: { fontSize: 12 } },
+        { text: `${publicAllocation}%`, options: { fontSize: 12 } }
+      ],
+      [
+        { text: 'Market Condition', options: { fontSize: 12 } },
+        { text: data.tokenomicsData.marketCondition, options: { fontSize: 12 } }
+      ],
+      [
+        { text: 'Average Cliff Period', options: { fontSize: 12 } },
+        { text: `${averageCliff.toFixed(1)} months`, options: { fontSize: 12 } }
+      ],
+      [
+        { text: 'Average Vesting Period', options: { fontSize: 12 } },
+        { text: `${averageVesting.toFixed(1)} months`, options: { fontSize: 12 } }
+      ],
+      [
+        { text: 'Number of Allocations', options: { fontSize: 12 } },
+        { text: data.tokenomicsData.allocations.length.toString(), options: { fontSize: 12 } }
+      ]
     ];
 
     metricsSlide.addTable(metricsData, {

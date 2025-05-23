@@ -18,7 +18,7 @@ export const captureChartAsImage = async (elementId: string): Promise<string | n
     await new Promise(resolve => setTimeout(resolve, 500));
 
     const canvas = await html2canvas(element, {
-      scale: 3, // Higher scale for better quality in presentations
+      scale: 4, // Increased scale for ultra-high quality
       backgroundColor: '#ffffff', // White background for presentations
       logging: false,
       useCORS: true,
@@ -26,10 +26,22 @@ export const captureChartAsImage = async (elementId: string): Promise<string | n
       height: element.offsetHeight,
       width: element.offsetWidth,
       scrollX: 0,
-      scrollY: 0
+      scrollY: 0,
+      // Additional options for better quality
+      foreignObjectRendering: true,
+      removeContainer: false,
+      imageTimeout: 5000,
+      onclone: (clonedDoc) => {
+        // Ensure all fonts are loaded in the cloned document
+        const clonedElement = clonedDoc.getElementById(elementId);
+        if (clonedElement) {
+          clonedElement.style.fontFamily = 'inherit';
+          clonedElement.style.fontSize = 'inherit';
+        }
+      }
     });
     
-    return canvas.toDataURL('image/png');
+    return canvas.toDataURL('image/png', 1.0); // Maximum quality
   } catch (error) {
     console.error('Error capturing chart:', error);
     return null;
