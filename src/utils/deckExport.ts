@@ -19,6 +19,10 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
     const distributionChart = await captureChartAsImage('token-distribution-chart');
     const unlockChart = await captureChartAsImage('token-unlock-chart');
 
+    if (!distributionChart || !unlockChart) {
+      throw new Error('Failed to capture charts. Please ensure both charts are visible.');
+    }
+
     // Create new presentation
     const pptx = new PptxGenJS();
     
@@ -74,11 +78,11 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       italic: true
     });
 
-    // Slide 2: Token Distribution
-    const distributionSlide = pptx.addSlide();
-    distributionSlide.background = { fill: 'FFFFFF' };
+    // Slide 2: Overview with both charts
+    const overviewSlide = pptx.addSlide();
+    overviewSlide.background = { fill: 'FFFFFF' };
     
-    distributionSlide.addText('Token Distribution', {
+    overviewSlide.addText('Token Economics Overview', {
       x: 0.5,
       y: 0.3,
       w: 9,
@@ -88,15 +92,68 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       color: '1E293B'
     });
 
-    if (distributionChart) {
-      distributionSlide.addImage({
-        data: distributionChart.split(',')[1],
-        x: 1,
-        y: 1.2,
-        w: 8,
-        h: 4.5
-      });
-    }
+    // Add distribution chart (left side)
+    overviewSlide.addImage({
+      data: distributionChart,
+      x: 0.5,
+      y: 1.2,
+      w: 4.5,
+      h: 3.5
+    });
+
+    // Add unlock chart (right side)
+    overviewSlide.addImage({
+      data: unlockChart,
+      x: 5.2,
+      y: 1.2,
+      w: 4.3,
+      h: 3.5
+    });
+
+    // Add charts labels
+    overviewSlide.addText('Token Distribution', {
+      x: 0.5,
+      y: 4.8,
+      w: 4.5,
+      h: 0.4,
+      fontSize: 14,
+      bold: true,
+      align: 'center',
+      color: '374151'
+    });
+
+    overviewSlide.addText('Unlock Schedule', {
+      x: 5.2,
+      y: 4.8,
+      w: 4.3,
+      h: 0.4,
+      fontSize: 14,
+      bold: true,
+      align: 'center',
+      color: '374151'
+    });
+
+    // Slide 3: Token Distribution Details
+    const distributionSlide = pptx.addSlide();
+    distributionSlide.background = { fill: 'FFFFFF' };
+    
+    distributionSlide.addText('Token Distribution Breakdown', {
+      x: 0.5,
+      y: 0.3,
+      w: 9,
+      h: 0.8,
+      fontSize: 28,
+      bold: true,
+      color: '1E293B'
+    });
+
+    distributionSlide.addImage({
+      data: distributionChart,
+      x: 1,
+      y: 1.2,
+      w: 8,
+      h: 4.5
+    });
 
     // Add allocation details
     let yPos = 6;
@@ -112,7 +169,8 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
 
     data.tokenomicsData.allocations.forEach((allocation, index) => {
       yPos += 0.4;
-      distributionSlide.addText(`• ${allocation.category}: ${allocation.percentage}%`, {
+      const tokenAmount = ((allocation.percentage / 100) * data.tokenomicsData.totalSupply).toLocaleString();
+      distributionSlide.addText(`• ${allocation.category}: ${allocation.percentage}% (${tokenAmount} tokens)`, {
         x: 0.8,
         y: yPos,
         w: 8,
@@ -122,7 +180,7 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       });
     });
 
-    // Slide 3: Vesting Schedule
+    // Slide 4: Vesting Schedule
     const vestingSlide = pptx.addSlide();
     vestingSlide.background = { fill: 'FFFFFF' };
     
@@ -136,15 +194,13 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       color: '1E293B'
     });
 
-    if (unlockChart) {
-      vestingSlide.addImage({
-        data: unlockChart.split(',')[1],
-        x: 0.5,
-        y: 1.2,
-        w: 9,
-        h: 4.5
-      });
-    }
+    vestingSlide.addImage({
+      data: unlockChart,
+      x: 0.5,
+      y: 1.2,
+      w: 9,
+      h: 4.5
+    });
 
     // Add vesting details
     yPos = 6;
@@ -175,7 +231,7 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       }
     });
 
-    // Slide 4: Key Metrics
+    // Slide 5: Key Metrics
     const metricsSlide = pptx.addSlide();
     metricsSlide.background = { fill: 'FFFFFF' };
     
