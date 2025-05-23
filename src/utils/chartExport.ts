@@ -14,10 +14,19 @@ export const captureChartAsImage = async (elementId: string): Promise<string | n
       return null;
     }
 
+    // Wait for any animations or transitions to complete
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     const canvas = await html2canvas(element, {
-      scale: 2, // Higher scale for better quality
-      backgroundColor: null, // Transparent background
+      scale: 3, // Higher scale for better quality in presentations
+      backgroundColor: '#ffffff', // White background for presentations
       logging: false,
+      useCORS: true,
+      allowTaint: true,
+      height: element.offsetHeight,
+      width: element.offsetWidth,
+      scrollX: 0,
+      scrollY: 0
     });
     
     return canvas.toDataURL('image/png');

@@ -15,7 +15,10 @@ export interface DeckExportData {
 
 export const generateInvestorDeck = async (data: DeckExportData): Promise<void> => {
   try {
-    // Capture charts as images
+    // Wait a moment for charts to render completely
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Capture charts as images with higher quality
     const distributionChart = await captureChartAsImage('token-distribution-chart');
     const unlockChart = await captureChartAsImage('token-unlock-chart');
 
@@ -78,62 +81,76 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       italic: true
     });
 
-    // Slide 2: Overview with both charts
+    // Slide 2: Main Overview - Exact Layout Match
     const overviewSlide = pptx.addSlide();
     overviewSlide.background = { fill: 'FFFFFF' };
     
+    // Title matching the original
     overviewSlide.addText('Token Economics Overview', {
       x: 0.5,
-      y: 0.3,
+      y: 0.2,
       w: 9,
-      h: 0.8,
-      fontSize: 28,
+      h: 0.6,
+      fontSize: 32,
       bold: true,
+      align: 'center',
       color: '1E293B'
     });
 
-    // Add distribution chart (left side)
+    // Distribution chart (left side) - larger to match original
     overviewSlide.addImage({
       data: distributionChart,
-      x: 0.5,
-      y: 1.2,
-      w: 4.5,
-      h: 3.5
+      x: 0.3,
+      y: 1.0,
+      w: 4.8,
+      h: 4.2
     });
 
-    // Add unlock chart (right side)
+    // Unlock chart (right side) - larger to match original
     overviewSlide.addImage({
       data: unlockChart,
-      x: 5.2,
-      y: 1.2,
+      x: 5.4,
+      y: 1.0,
       w: 4.3,
-      h: 3.5
+      h: 4.2
     });
 
-    // Add charts labels
+    // Chart labels below charts
     overviewSlide.addText('Token Distribution', {
-      x: 0.5,
-      y: 4.8,
-      w: 4.5,
+      x: 0.3,
+      y: 5.3,
+      w: 4.8,
       h: 0.4,
-      fontSize: 14,
+      fontSize: 16,
       bold: true,
       align: 'center',
-      color: '374151'
+      color: '1E293B'
     });
 
     overviewSlide.addText('Unlock Schedule', {
-      x: 5.2,
-      y: 4.8,
+      x: 5.4,
+      y: 5.3,
       w: 4.3,
       h: 0.4,
-      fontSize: 14,
+      fontSize: 16,
       bold: true,
       align: 'center',
-      color: '374151'
+      color: '1E293B'
     });
 
-    // Slide 3: Token Distribution Details
+    // Add key metrics summary at bottom
+    const totalSupplyFormatted = data.tokenomicsData.totalSupply.toLocaleString();
+    overviewSlide.addText(`Total Supply: ${totalSupplyFormatted} tokens`, {
+      x: 0.5,
+      y: 6.0,
+      w: 9,
+      h: 0.3,
+      fontSize: 14,
+      align: 'center',
+      color: '475569'
+    });
+
+    // Slide 3: Detailed Token Distribution
     const distributionSlide = pptx.addSlide();
     distributionSlide.background = { fill: 'FFFFFF' };
     
@@ -147,22 +164,23 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       color: '1E293B'
     });
 
+    // Large distribution chart
     distributionSlide.addImage({
       data: distributionChart,
-      x: 1,
+      x: 0.5,
       y: 1.2,
-      w: 8,
-      h: 4.5
+      w: 6,
+      h: 3.5
     });
 
-    // Add allocation details
-    let yPos = 6;
-    distributionSlide.addText('Allocation Breakdown:', {
+    // Detailed allocation breakdown
+    let yPos = 5.2;
+    distributionSlide.addText('Allocation Details:', {
       x: 0.5,
       y: yPos,
       w: 9,
       h: 0.4,
-      fontSize: 16,
+      fontSize: 18,
       bold: true,
       color: '374151'
     });
@@ -180,7 +198,7 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       });
     });
 
-    // Slide 4: Vesting Schedule
+    // Slide 4: Vesting Schedule Details
     const vestingSlide = pptx.addSlide();
     vestingSlide.background = { fill: 'FFFFFF' };
     
@@ -194,22 +212,23 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       color: '1E293B'
     });
 
+    // Large unlock chart
     vestingSlide.addImage({
       data: unlockChart,
-      x: 0.5,
+      x: 0.3,
       y: 1.2,
-      w: 9,
-      h: 4.5
+      w: 9.4,
+      h: 3.5
     });
 
-    // Add vesting details
-    yPos = 6;
-    vestingSlide.addText('Vesting Details:', {
+    // Vesting schedule details
+    yPos = 5.2;
+    vestingSlide.addText('Vesting Schedule Details:', {
       x: 0.5,
       y: yPos,
       w: 9,
       h: 0.4,
-      fontSize: 16,
+      fontSize: 18,
       bold: true,
       color: '374151'
     });
@@ -217,8 +236,10 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
     data.tokenomicsData.allocations.forEach((allocation, index) => {
       if (allocation.vesting.cliff > 0 || allocation.vesting.duration > 0) {
         yPos += 0.4;
+        const cliffText = allocation.vesting.cliff > 0 ? `${allocation.vesting.cliff}m cliff` : 'No cliff';
+        const vestingText = allocation.vesting.duration > 0 ? `${allocation.vesting.duration}m vesting` : 'No vesting';
         vestingSlide.addText(
-          `• ${allocation.category}: ${allocation.vesting.cliff}m cliff, ${allocation.vesting.duration}m vesting (${allocation.vesting.type})`,
+          `• ${allocation.category}: ${cliffText}, ${vestingText} (${allocation.vesting.type})`,
           {
             x: 0.8,
             y: yPos,
@@ -231,7 +252,7 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       }
     });
 
-    // Slide 5: Key Metrics
+    // Slide 5: Key Token Metrics
     const metricsSlide = pptx.addSlide();
     metricsSlide.background = { fill: 'FFFFFF' };
     
@@ -245,42 +266,63 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       color: '1E293B'
     });
 
+    // Calculate key metrics
     const totalAllocation = data.tokenomicsData.allocations.reduce((sum, a) => sum + a.percentage, 0);
     const teamAllocation = data.tokenomicsData.allocations
       .filter(a => a.category.toLowerCase().includes('team'))
       .reduce((sum, a) => sum + a.percentage, 0);
     
-    const metrics = [
-      { label: 'Total Supply', value: data.tokenomicsData.totalSupply.toLocaleString() + ' tokens' },
-      { label: 'Total Allocation', value: totalAllocation + '%' },
-      { label: 'Team Allocation', value: teamAllocation + '%' },
-      { label: 'Market Condition', value: data.tokenomicsData.marketCondition },
-      { label: 'Number of Allocations', value: data.tokenomicsData.allocations.length.toString() }
+    const publicAllocation = data.tokenomicsData.allocations
+      .filter(a => a.category.toLowerCase().includes('public') || a.category.toLowerCase().includes('sale'))
+      .reduce((sum, a) => sum + a.percentage, 0);
+
+    const averageCliff = data.tokenomicsData.allocations.length > 0 
+      ? data.tokenomicsData.allocations.reduce((sum, a) => sum + a.vesting.cliff, 0) / data.tokenomicsData.allocations.length
+      : 0;
+
+    const averageVesting = data.tokenomicsData.allocations.length > 0 
+      ? data.tokenomicsData.allocations.reduce((sum, a) => sum + a.vesting.duration, 0) / data.tokenomicsData.allocations.length
+      : 0;
+
+    // Create metrics table
+    const metricsData = [
+      ['Metric', 'Value'],
+      ['Total Supply', `${data.tokenomicsData.totalSupply.toLocaleString()} tokens`],
+      ['Total Allocation', `${totalAllocation}%`],
+      ['Team Allocation', `${teamAllocation}%`],
+      ['Public Allocation', `${publicAllocation}%`],
+      ['Market Condition', data.tokenomicsData.marketCondition],
+      ['Average Cliff Period', `${averageCliff.toFixed(1)} months`],
+      ['Average Vesting Period', `${averageVesting.toFixed(1)} months`],
+      ['Number of Allocations', data.tokenomicsData.allocations.length.toString()]
     ];
 
-    yPos = 1.5;
-    metrics.forEach((metric, index) => {
-      metricsSlide.addText(metric.label + ':', {
-        x: 1,
-        y: yPos,
-        w: 4,
-        h: 0.5,
-        fontSize: 18,
-        bold: true,
-        color: '374151'
-      });
-      
-      metricsSlide.addText(metric.value, {
-        x: 5,
-        y: yPos,
-        w: 4,
-        h: 0.5,
-        fontSize: 18,
-        color: '6366F1'
-      });
-      
-      yPos += 0.7;
+    metricsSlide.addTable(metricsData, {
+      x: 1.5,
+      y: 1.5,
+      w: 7,
+      colW: [3.5, 3.5],
+      rowH: 0.4,
+      border: { pt: 1, color: 'E5E7EB' },
+      fill: { color: 'F9FAFB' },
+      fontSize: 12,
+      color: '374151'
     });
+
+    // Footer
+    metricsSlide.addText(
+      `Generated via Tokenomics Platform - ${new Date().toLocaleDateString()}`,
+      {
+        x: 0.5,
+        y: 6.5,
+        w: 9,
+        h: 0.3,
+        fontSize: 10,
+        align: 'center',
+        color: '9CA3AF',
+        italic: true
+      }
+    );
 
     // Generate and download
     const fileName = `${data.projectName.replace(/[^a-zA-Z0-9]/g, '_')}_Tokenomics_Deck.pptx`;
