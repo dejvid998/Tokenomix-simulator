@@ -1,4 +1,3 @@
-
 import PptxGenJS from 'pptxgenjs';
 import { captureChartAsImage } from './chartExport';
 import type { TokenomicsData } from '@/types/tokenomics';
@@ -202,8 +201,8 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       ? data.tokenomicsData.allocations.reduce((sum, a) => sum + a.vesting.duration, 0) / data.tokenomicsData.allocations.length
       : 0;
 
-    // Create metrics table
-    const metricsData = [
+    // Create metrics table data as string[][]
+    const metricsDataRaw: string[][] = [
       ['Metric', 'Value'],
       ['Total Supply', `${data.tokenomicsData.totalSupply.toLocaleString()} tokens`],
       ['Total Allocation', `${totalAllocation}%`],
@@ -213,17 +212,40 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       ['Number of Allocations', data.tokenomicsData.allocations.length.toString()]
     ];
 
-    metricsSlide.addTable(metricsData, {
+    // Transform metricsDataRaw to PptxGenJS.TableRow[]
+    // Each cell needs to be an object like { text: "cell content" }
+    const transformedMetricsData = metricsDataRaw.map(row =>
+      row.map(cellString => ({ text: cellString }))
+    );
+
+    metricsSlide.addTable(transformedMetricsData, {
       x: 1.5,
       y: 1.5,
       w: 7,
       colW: [3.5, 3.5],
       rowH: 0.4,
       border: { pt: 1, color: 'E5E7EB' },
-      fill: { color: 'F9FAFB' },
+      // To style header row differently, you can pass more complex objects in transformedMetricsData
+      // For example, for the header: transformedMetricsData[0].forEach(cell => cell.options = { bold: true, color: '000000' });
+      // Or, pass options directly during map: row.map((cellString, cellIndex) => ({ text: cellString, options: rowIndex === 0 ? { bold: true } : {} }))
+      // For simplicity, PptxGenJS often handles first row as header styling if not specified or if specific options are used in addTable for headers.
+      // The provided options here apply to the whole table.
+      fill: { color: 'F9FAFB' }, // This fill applies to all cells
       fontSize: 12,
-      color: '374151'
+      color: '374151' // Default text color for all cells
     });
+    
+    // If you want the header row ('Metric', 'Value') to have a different style (e.g., bold),
+    // you would need to modify the `transformedMetricsData` structure for the first row.
+    // For example:
+    // const transformedMetricsDataWithHeaderStyle = metricsDataRaw.map((row, rowIndex) =>
+    //   row.map(cellString => ({
+    //     text: cellString,
+    //     options: rowIndex === 0 ? { bold: true, fill: { color: 'E5E7EB' } } : {}
+    //   }))
+    // );
+    // And then use `transformedMetricsDataWithHeaderStyle` in `addTable`.
+    // For now, we'll keep it simple as the primary issue is the type error.
 
     console.log('Generating and downloading presentation...');
 
@@ -235,6 +257,10 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
     
   } catch (error) {
     console.error('Error generating deck:', error);
-    throw new Error(`Failed to generate investor deck: ${error.message}`);
+    if (error instanceof Error) {
+      throw new Error(`Failed to generate investor deck: ${error.message}`);
+    } else {
+      throw new Error(`Failed to generate investor deck: An unknown error occurred`);
+    }
   }
 };
