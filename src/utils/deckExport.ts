@@ -118,36 +118,67 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
 
     console.log('Adding distribution chart to slide...');
     
-    // Add distribution chart - use the data URL directly
     distributionSlide.addImage({
       data: distributionChart,
       x: 0.5,
       y: 1.2,
       w: 9,
-      h: 4.5,
+      h: 5.5, // Increased height slightly as text is removed
       sizing: {
         type: 'contain',
         w: 9,
-        h: 4.5
+        h: 5.5
       }
     });
 
-    // Add allocation breakdown
-    let yPos = 5.8;
-    data.tokenomicsData.allocations.forEach((allocation) => {
-      const tokenAmount = ((allocation.percentage / 100) * data.tokenomicsData.totalSupply).toLocaleString();
-      distributionSlide.addText(`${allocation.category}: ${allocation.percentage}% (${tokenAmount} tokens)`, {
-        x: 0.8,
-        y: yPos,
-        w: 8,
-        h: 0.3,
-        fontSize: 12,
-        color: '4B5563'
-      });
-      yPos += 0.3;
+    // Slide 3: Stakeholder Allocations (New Slide)
+    const allocationsSlide = pptx.addSlide();
+    allocationsSlide.background = { fill: 'FFFFFF' };
+
+    allocationsSlide.addText('Stakeholder Allocations', {
+      x: 0.5,
+      y: 0.3,
+      w: 9,
+      h: 0.8,
+      fontSize: 28,
+      bold: true,
+      color: '1E293B'
     });
 
-    // Slide 3: Token Unlock Schedule
+    const allocationsTableDataRaw: string[][] = [
+      ['Stakeholder Category', 'Allocation (%)', 'Token Amount'],
+      ...data.tokenomicsData.allocations.map((allocation) => {
+        const tokenAmount = ((allocation.percentage / 100) * data.tokenomicsData.totalSupply).toLocaleString();
+        return [
+          allocation.category,
+          allocation.percentage.toFixed(2), // Ensure percentage has consistent formatting
+          tokenAmount
+        ];
+      })
+    ];
+
+    const transformedAllocationsTableData = allocationsTableDataRaw.map((row, rowIndex) =>
+      row.map(cellString => ({
+        text: cellString,
+        options: rowIndex === 0 
+          ? { bold: true, fill: { color: 'E5E7EB' }, color: '1E293B', align: 'center' } 
+          : { fill: { color: 'F9FAFB' }, color: '374151' }
+      }))
+    );
+
+    allocationsSlide.addTable(transformedAllocationsTableData, {
+      x: 0.5,
+      y: 1.5,
+      w: 9,
+      colW: [4, 2, 3], // Adjust column widths as needed
+      rowH: 0.4,
+      border: { pt: 1, color: 'CCCCCC' },
+      fontSize: 12,
+      valign: 'middle'
+    });
+
+
+    // Slide 4: Token Unlock Schedule (was Slide 3)
     const unlockSlide = pptx.addSlide();
     unlockSlide.background = { fill: 'FFFFFF' };
     
@@ -163,7 +194,6 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
 
     console.log('Adding unlock chart to slide...');
     
-    // Add unlock chart
     unlockSlide.addImage({
       data: unlockChart,
       x: 0.3,
@@ -177,7 +207,7 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       }
     });
 
-    // Slide 4: Key Metrics
+    // Slide 5: Key Metrics (was Slide 4)
     const metricsSlide = pptx.addSlide();
     metricsSlide.background = { fill: 'FFFFFF' };
     
@@ -232,18 +262,6 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       color: '374151'
     });
     
-    // If you want the header row ('Metric', 'Value') to have a different style (e.g., bold),
-    // you would need to modify the `transformedMetricsData` structure for the first row.
-    // For example:
-    // const transformedMetricsDataWithHeaderStyle = metricsDataRaw.map((row, rowIndex) =>
-    //   row.map(cellString => ({
-    //     text: cellString,
-    //     options: rowIndex === 0 ? { bold: true, fill: { color: 'E5E7EB' } } : { fill: { color: 'F9FAFB' } }
-    //   }))
-    // );
-    // And then use `transformedMetricsDataWithHeaderStyle` in `addTable`.
-    // For now, we'll keep it simple as the primary issue is the type error.
-
     console.log('Generating and downloading presentation...');
 
     // Generate and download
