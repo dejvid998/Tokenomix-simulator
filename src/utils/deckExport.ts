@@ -120,7 +120,7 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
     
     // Add distribution chart - use the data URL directly
     distributionSlide.addImage({
-      data: distributionChart.replace(/^data:image\/[a-z]+;base64,/, ''),
+      data: distributionChart,
       x: 0.5,
       y: 1.2,
       w: 9,
@@ -165,7 +165,7 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
     
     // Add unlock chart
     unlockSlide.addImage({
-      data: unlockChart.replace(/^data:image\/[a-z]+;base64,/, ''),
+      data: unlockChart,
       x: 0.3,
       y: 1.2,
       w: 9.4,
@@ -214,8 +214,11 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
 
     // Transform metricsDataRaw to PptxGenJS.TableRow[]
     // Each cell needs to be an object like { text: "cell content" }
-    const transformedMetricsData = metricsDataRaw.map(row =>
-      row.map(cellString => ({ text: cellString }))
+    const transformedMetricsData = metricsDataRaw.map((row, rowIndex) =>
+      row.map(cellString => ({
+        text: cellString,
+        options: rowIndex === 0 ? { bold: true, fill: { color: 'E5E7EB' } } : { fill: { color: 'F9FAFB' } }
+      }))
     );
 
     metricsSlide.addTable(transformedMetricsData, {
@@ -224,15 +227,9 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
       w: 7,
       colW: [3.5, 3.5],
       rowH: 0.4,
-      border: { pt: 1, color: 'E5E7EB' },
-      // To style header row differently, you can pass more complex objects in transformedMetricsData
-      // For example, for the header: transformedMetricsData[0].forEach(cell => cell.options = { bold: true, color: '000000' });
-      // Or, pass options directly during map: row.map((cellString, cellIndex) => ({ text: cellString, options: rowIndex === 0 ? { bold: true } : {} }))
-      // For simplicity, PptxGenJS often handles first row as header styling if not specified or if specific options are used in addTable for headers.
-      // The provided options here apply to the whole table.
-      fill: { color: 'F9FAFB' }, // This fill applies to all cells
+      border: { pt: 1, color: 'CCCCCC' },
       fontSize: 12,
-      color: '374151' // Default text color for all cells
+      color: '374151'
     });
     
     // If you want the header row ('Metric', 'Value') to have a different style (e.g., bold),
@@ -241,7 +238,7 @@ export const generateInvestorDeck = async (data: DeckExportData): Promise<void> 
     // const transformedMetricsDataWithHeaderStyle = metricsDataRaw.map((row, rowIndex) =>
     //   row.map(cellString => ({
     //     text: cellString,
-    //     options: rowIndex === 0 ? { bold: true, fill: { color: 'E5E7EB' } } : {}
+    //     options: rowIndex === 0 ? { bold: true, fill: { color: 'E5E7EB' } } : { fill: { color: 'F9FAFB' } }
     //   }))
     // );
     // And then use `transformedMetricsDataWithHeaderStyle` in `addTable`.
