@@ -32,29 +32,6 @@ Most existing tools are either **too technical** or require deep **financial exp
 
 ---
 
-## 🚧 Roadmap  
-
-**Estimated Completion: 5 Months after grant approval**  
-
-| Milestone | Deliverable | Timeline |
-|-----------|-------------|----------|
-| M1 | Core data input + basic graphs | Month 1 |
-| M2 | Advanced visualizations (supply vs. demand, pressure curves) | Month 2 |
-| M3 | Export functions (CSV, PDF) | Month 3 |
-| M4 | Public demo & community feedback loop | Month 4 |
-| M5 | Open-source release + contribution guide | Month 5 |
-
----
-
-## 📊 Success Metrics  
-
-We will consider the project a success if we achieve:  
-- **50+ unique users** within 3 months of MVP launch  
-- **5 Solana projects** actively using the platform for tokenomics design  
-- **2 Solana DAOs/ecosystem partners** providing feedback or support  
-
----
-
 ## 🛠️ Tech Stack  
 
 This project is built with:  
