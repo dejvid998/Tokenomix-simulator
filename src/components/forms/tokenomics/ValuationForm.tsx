@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { ProjectDetailsFields } from "./valuation/ProjectDetailsFields";
 import { MarketDetailsFields } from "./valuation/MarketDetailsFields";
+import { FundingRoundsFields } from "./valuation/FundingRoundsFields";
 import { useValuationForm } from "@/hooks/useValuationForm";
 import type { ValuationOutput } from "@/types/valuation";
 
@@ -24,6 +25,11 @@ export const ValuationForm = ({ onValuationGenerated }: ValuationFormProps) => {
           onFieldChange={handleFieldChange}
         />
       </div>
+
+      <FundingRoundsFields
+        formData={formData}
+        onFieldChange={handleFieldChange}
+      />
 
       <Button 
         type="submit" 

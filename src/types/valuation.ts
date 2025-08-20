@@ -1,3 +1,12 @@
+export interface FundingRound {
+  name: string;
+  amount: number;
+  tokenPrice: number;
+  fundraisingMethod: 'Pre-Seed' | 'Seed' | 'Private Sale' | 'IDO' | 'Fair Launch';
+  dilution?: number; // percentage
+  date?: string; // ISO date
+}
+
 export interface ValuationInput {
   fundraisingAmount: number;
   tokenPrice: number;
@@ -11,6 +20,7 @@ export interface ValuationInput {
   initialStaking: number;
   teamTokens: number;
   marketingBudget: number;
+  fundingRounds?: FundingRound[];
 }
 
 export interface RiskAnalysis {

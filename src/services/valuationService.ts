@@ -169,7 +169,12 @@ export class ValuationService {
     // Mock processing delay
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    const baseValuation = input.totalSupply * input.tokenPrice;
+    // If funding rounds provided, derive an implied blended price when available
+    const totalRoundAmount = (input.fundingRounds || []).reduce((sum, r) => sum + (r.amount || 0), 0);
+    const weightedPriceNumerator = (input.fundingRounds || []).reduce((sum, r) => sum + ((r.tokenPrice || input.tokenPrice) * (r.amount || 0)), 0);
+    const blendedTokenPrice = totalRoundAmount > 0 ? (weightedPriceNumerator / totalRoundAmount) : input.tokenPrice;
+
+    const baseValuation = input.totalSupply * blendedTokenPrice;
     const marketMultiplier = input.marketCondition === 'Bull' ? 1.2 : 
                             input.marketCondition === 'Bear' ? 0.8 : 1;
 
