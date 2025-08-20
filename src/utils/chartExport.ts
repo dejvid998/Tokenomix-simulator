@@ -1,5 +1,5 @@
 
-import html2canvas from 'html2canvas';
+import { logger } from '@/lib/logger';
 
 /**
  * Captures a chart element as an image and returns it as a base64 string
@@ -8,16 +8,16 @@ import html2canvas from 'html2canvas';
  */
 export const captureChartAsImage = async (elementId: string): Promise<string | null> => {
   try {
-    console.log(`Attempting to capture chart with ID: ${elementId}`);
+    logger.log(`Attempting to capture chart with ID: ${elementId}`);
     
     const element = document.getElementById(elementId);
     if (!element) {
-      console.error(`Element with ID "${elementId}" not found`);
+      logger.error(`Element with ID "${elementId}" not found`);
       return null;
     }
 
-    console.log(`Element found:`, element);
-    console.log(`Element dimensions:`, {
+    logger.debug(`Element found:`, element);
+    logger.debug(`Element dimensions:`, {
       width: element.offsetWidth,
       height: element.offsetHeight,
       scrollWidth: element.scrollWidth,
@@ -26,10 +26,10 @@ export const captureChartAsImage = async (elementId: string): Promise<string | n
 
     // Check if element is visible
     const rect = element.getBoundingClientRect();
-    console.log(`Element position:`, rect);
+    logger.debug(`Element position:`, rect);
     
     if (rect.width === 0 || rect.height === 0) {
-      console.error(`Element "${elementId}" has zero dimensions`);
+      logger.error(`Element "${elementId}" has zero dimensions`);
       return null;
     }
 
@@ -40,7 +40,8 @@ export const captureChartAsImage = async (elementId: string): Promise<string | n
     element.style.transform = 'translateZ(0)';
     await new Promise(resolve => setTimeout(resolve, 100));
 
-    console.log(`Starting html2canvas capture for ${elementId}`);
+    logger.log(`Starting html2canvas capture for ${elementId}`);
+    const { default: html2canvas } = await import('html2canvas');
     
     const canvas = await html2canvas(element, {
       scale: 3, // High quality but not excessive
@@ -78,17 +79,17 @@ export const captureChartAsImage = async (elementId: string): Promise<string | n
       }
     });
     
-    console.log(`Canvas created:`, {
+    logger.debug(`Canvas created:`, {
       width: canvas.width,
       height: canvas.height
     });
     
     const dataURL = canvas.toDataURL('image/png', 1.0);
-    console.log(`Image captured successfully for ${elementId}. Data URL length: ${dataURL.length}`);
+    logger.log(`Image captured successfully for ${elementId}. Data URL length: ${dataURL.length}`);
     
     return dataURL;
   } catch (error) {
-    console.error(`Error capturing chart ${elementId}:`, error);
+    logger.error(`Error capturing chart ${elementId}:`, error);
     return null;
   }
 };
@@ -101,13 +102,13 @@ export const prepareChartsForExport = async (): Promise<{
   unlockChart: string | null;
   distributionChart: string | null;
 }> => {
-  console.log('Starting chart preparation for export');
+  logger.log('Starting chart preparation for export');
   
   // Check if charts exist
   const distributionElement = document.getElementById('token-distribution-chart');
   const unlockElement = document.getElementById('token-unlock-chart');
   
-  console.log('Chart elements found:', {
+  logger.debug('Chart elements found:', {
     distribution: !!distributionElement,
     unlock: !!unlockElement
   });
@@ -115,7 +116,7 @@ export const prepareChartsForExport = async (): Promise<{
   const unlockChart = await captureChartAsImage('token-unlock-chart');
   const distributionChart = await captureChartAsImage('token-distribution-chart');
   
-  console.log('Chart capture results:', {
+  logger.log('Chart capture results:', {
     unlockChart: unlockChart ? 'SUCCESS' : 'FAILED',
     distributionChart: distributionChart ? 'SUCCESS' : 'FAILED'
   });

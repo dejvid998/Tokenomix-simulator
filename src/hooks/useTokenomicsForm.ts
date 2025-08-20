@@ -1,6 +1,6 @@
 import { TokenomicsData, TokenAllocation } from '@/types/tokenomics';
 import { toast } from "sonner";
-import * as XLSX from 'xlsx';
+import { logger } from '@/lib/logger';
 import { prepareChartsForExport } from '@/utils/chartExport';
 
 export const useTokenomicsForm = (data: TokenomicsData, onChange: (data: TokenomicsData) => void) => {
@@ -105,6 +105,7 @@ export const useTokenomicsForm = (data: TokenomicsData, onChange: (data: Tokenom
       toast.info("Preparing export...");
       
       const charts = await prepareChartsForExport();
+      const XLSX = await import('xlsx');
       
       const wsData = [
         ['Category', 'Percentage', 'Cliff (months)', 'Vesting Duration (months)', 'Vesting Type', 'Token Amount'],
@@ -185,7 +186,7 @@ export const useTokenomicsForm = (data: TokenomicsData, onChange: (data: Tokenom
       
       toast.success("XLSX report with charts downloaded successfully!");
     } catch (error) {
-      console.error("Export error:", error);
+      logger.error("Export error:", error);
       toast.error("Failed to export XLSX. Please try again.");
     }
   };

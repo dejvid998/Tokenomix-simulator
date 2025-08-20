@@ -1,11 +1,12 @@
 
-import { Document, Packer, Paragraph, TextRun } from 'docx';
+import { logger } from '@/lib/logger';
 import type { Question, QuestionnaireData } from '@/types/questionnaire';
 
 export const exportToDocx = async (
   questions: Question[],
   answers: QuestionnaireData
 ): Promise<void> => {
+  const { Document, Packer, Paragraph, TextRun } = await import('docx');
   const doc = new Document({
     sections: [{
       properties: {},
@@ -49,4 +50,5 @@ export const exportToDocx = async (
   a.download = "tokenomics-questionnaire.docx";
   a.click();
   window.URL.revokeObjectURL(url);
+  logger.log('DOCX exported');
 };

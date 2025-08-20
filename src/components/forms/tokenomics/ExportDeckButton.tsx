@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { FileText, Download } from 'lucide-react';
 import { toast } from "sonner";
 import { generateInvestorDeck } from '@/utils/deckExport';
+import { logger } from '@/lib/logger';
 import type { TokenomicsData } from '@/types/tokenomics';
 
 interface ExportDeckButtonProps {
@@ -56,7 +57,7 @@ export const ExportDeckButton: React.FC<ExportDeckButtonProps> = ({
       toast.success("Investor deck downloaded successfully!");
       
     } catch (error) {
-      console.error("Export deck error:", error);
+      logger.error("Export deck error:", error);
       toast.error("Failed to generate investor deck. Please try again.");
     } finally {
       setIsExporting(false);

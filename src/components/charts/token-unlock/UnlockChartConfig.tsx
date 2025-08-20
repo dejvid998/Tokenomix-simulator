@@ -144,7 +144,8 @@ export const UnlockChartConfig: React.FC<UnlockChartConfigProps> = ({
             strokeWidth={2}
             dot={false}
             name={category}
-            activeDot={{ r: 6, strokeWidth: 0 }}
+            isAnimationActive={false}
+            activeDot={{ r: 4, strokeWidth: 0 }}
           />
         ))}
         <Line
@@ -154,7 +155,8 @@ export const UnlockChartConfig: React.FC<UnlockChartConfigProps> = ({
           strokeWidth={3}
           dot={false}
           name="Total"
-          activeDot={{ r: 6, strokeWidth: 0 }}
+          isAnimationActive={false}
+          activeDot={{ r: 4, strokeWidth: 0 }}
         />
       </LineChart>
     </ResponsiveContainer>

@@ -25,16 +25,17 @@ export const PieChartComponent: React.FC<PieChartComponentProps> = ({
           data={chartData}
           cx="50%"
           cy="50%"
-          labelLine={true}
+          labelLine={false}
           label={(props) => renderCustomizedLabel(props, colors)}
           outerRadius={100} 
           innerRadius={0}
-          paddingAngle={1}
+          paddingAngle={0.5}
           fill="#8884d8"
           dataKey="percentage"
           nameKey="category"
           onClick={onPieClick}
           className="hover:opacity-80 transition-opacity duration-200 cursor-pointer"
+          isAnimationActive={false}
           activeIndex={activeIndex !== null ? [activeIndex] : []}
           activeShape={(props) => {
             const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
@@ -56,7 +57,7 @@ export const PieChartComponent: React.FC<PieChartComponentProps> = ({
         >
           {chartData.map((entry, index) => (
             <Cell 
-              key={`cell-${index}`} 
+              key={`cell-${entry.category}-${index}`} 
               fill={colors[index % colors.length]}
               stroke="#ffffff"
               strokeWidth={2}
